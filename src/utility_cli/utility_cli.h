@@ -1,9 +1,15 @@
 #ifndef SRC_UTILITY_CLI_UTILITY_CLI_H_
 #define SRC_UTILITY_CLI_UTILITY_CLI_H_
 
+#include <cmd_args/cmd_args.h>
+
 #include <iostream>
 #include <map>
 #include <string>
+
+using hhullen::Argument;
+using hhullen::CMDArgs;
+using hhullen::Flag;
 
 namespace s21 {
 
@@ -24,16 +30,10 @@ class UtilityCLI {
 
  private:
   map<string, void (UtilityCLI::*)()> algorithms_runners_;
-  map<string, string> arguments_;
+  CMDArgs command_line_;
 
-  void InitialiseAlgorithms();
-  void ReadArguments(int argc, char* argv[]);
-  bool IsOption(const string& arg);
-  void CheckNextPresence(int i, int argc, const string& arg);
-
+  void InitializeAlgorithms();
   void InitializeInput();
-  string GetOptionParameterIfExists(string option,
-                                    string exception_message = "");
 
   void RunAlgorithm();
   void ACO();
