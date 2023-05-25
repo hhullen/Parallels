@@ -1,13 +1,11 @@
-#include <iostream>
-
-#include "utility_cli/utility_cli.h"
+#include "utility_cli/utility_cli.cc"
 
 using s21::UtilityCLI;
 using std::cerr;
 using std::cout;
 using std::invalid_argument;
 
-int main(int argc, char* argv[]) {
+int main(int argc, const char* argv[]) {
   int exit_code = 1;
   try {
     UtilityCLI utility(argc, argv);

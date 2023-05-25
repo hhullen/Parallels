@@ -2,13 +2,23 @@
 #define SRC_MATRIX_H_
 
 #include <cmath>
+#include <fstream>
 #include <iostream>
+#include <string>
+using std::atof;
+using std::fstream;
+using std::getline;
+using std::ifstream;
 using std::invalid_argument;
+using std::isdigit;
+using std::ofstream;
 using std::out_of_range;
+using std::sscanf;
+using std::string;
 
-const double kACCURACY = 0.0000001;
-const bool kFILL_WITH_ZERO = true;
-const bool kNO_FILL = false;
+const double kAccuracy = 0.0000001;
+const bool kFillWithZero = true;
+const bool kNoFill = false;
 
 namespace hhullen {
 
@@ -20,11 +30,16 @@ class Matrix {
   Matrix(Matrix&& other);
   ~Matrix();
 
+  void Load(const string& file_path);
+  void Save(const string& file_path);
+  void ExchangeRows(const int row_1, const int row_2);
   bool IsEqual(const Matrix& other) const;
   void Summarize(const Matrix& other);
+  void SummarizeRows(const int base_row, const int summ_row);
   void Substract(const Matrix& other);
   void MultiplyNumber(const double num);
   void Multiply(const Matrix& other);
+  void MuliplyRowNumber(const int row, const double num);
   void HadamardProduct(const Matrix& other);
   Matrix Transpose() const;
   Matrix CelculateComplements();
@@ -51,6 +66,8 @@ class Matrix {
  private:
   int rows_, cols_;
   double** matrix_;
+  ifstream* input_file_;
+  ofstream* output_file_;
 
   void init_matrix(bool fill);
   void copy_data_other_to_this_matrix(double** other_matrix);
@@ -69,6 +86,14 @@ class Matrix {
   double algebraic_addition(Matrix* initial_matrix, int row, int col);
   void make_matrix_minor(Matrix* initial_matrix, int row, int col,
                          Matrix* minor);
+  void IsInputFileOpened(const ifstream& file);
+  void IsOutputFileOpened(const ofstream& file);
+  void ReadMatrixSize(ifstream& file);
+  void ReadMatrix(ifstream& file);
+  void ReadLineToMatrixRow(const string& line, int row);
+  void ShiftToNextNumber(const string& line, size_t* i);
+  void WriteMatrixSize(ofstream& file);
+  void WriteMatrix(ofstream& file);
 };
 
 }  // namespace hhullen

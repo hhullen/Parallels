@@ -4,6 +4,7 @@
 #include <cmd_args/cmd_args.h>
 
 #include <iostream>
+#include <list>
 #include <map>
 #include <string>
 
@@ -13,29 +14,30 @@ using hhullen::Flag;
 
 namespace s21 {
 
-using s21::Graph;
-using s21::GraphAlgorithms;
+using Str = std::string;
+
+// using s21::Graph;
+// using s21::GraphAlgorithms;
 using std::atoi;
 using std::cout;
 using std::invalid_argument;
 using std::isdigit;
 using std::map;
-using std::string;
+using Str = std::string;
+using FlagValues = std::list<Str>;
 
 class UtilityCLI {
  public:
-  UtilityCLI() = delete;
-  UtilityCLI(int argc, char* argv[]);
+  UtilityCLI() {}
+  UtilityCLI(int argc, const char* argv[]);
   void Exec();
 
  private:
-  map<string, void (UtilityCLI::*)()> algorithms_runners_;
+  map<std::string, void (UtilityCLI::*)()> algorithms_runners_;
   CMDArgs command_line_;
 
   void InitializeAlgorithms();
-  void InitializeInput();
 
-  void RunAlgorithm();
   void ACO();
   void SLE();
   void Winograd();
