@@ -20,8 +20,8 @@ class Argument {
   ~Argument();
 
   void ReadArgument(const Str &arg);
-  Str GetValue();
-  Str GetName();
+  const Str GetValue() const;
+  const Str GetName() const;
 
   static bool IsArgument(const Str &arg) {
     return arg.size() > 0 && arg[0] != '-';
@@ -51,14 +51,14 @@ void Argument::ReadArgument(const Str &arg) {
   value_ = arg;
 }
 
-Str Argument::GetValue() { return value_; }
+const Str Argument::GetValue() const { return value_; }
 
-Str Argument::GetName() { return name_; }
+const Str Argument::GetName() const { return name_; }
 
 void Argument::ValidateArg(const Str &arg, Type type) {
   if (!std::regex_match(arg, regex_[type])) {
-    throw std::invalid_argument("Incorrect value type " + arg + " of option " +
-                                name_);
+    throw std::invalid_argument("Incorrect value type \"" + arg +
+                                "\" of option \"" + name_ + "\"");
   }
 }
 

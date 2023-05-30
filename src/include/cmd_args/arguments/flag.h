@@ -7,8 +7,6 @@
 
 namespace hhullen {
 
-using Str = std::string;
-
 class Flag {
   using RegEx = std::regex;
 
