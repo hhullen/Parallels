@@ -21,9 +21,10 @@ class SLE {
   const Matrix GetVariables();
 
  private:
-  Matrix coefficients_;
-  Matrix constants_;
+  Matrix extended_;
   Matrix variables_;
+
+  void VerifyCorrectness();
 };
 
 }  // namespace s21

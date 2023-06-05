@@ -16,8 +16,6 @@ namespace s21 {
 
 using Str = std::string;
 
-// using s21::Graph;
-// using s21::GraphAlgorithms;
 using std::atoi;
 using std::cout;
 using std::invalid_argument;

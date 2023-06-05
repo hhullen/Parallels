@@ -6,7 +6,6 @@
 #include <iostream>
 #include <string>
 using std::atof;
-using std::fstream;
 using std::getline;
 using std::ifstream;
 using std::invalid_argument;
