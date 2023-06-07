@@ -18,9 +18,9 @@ UtilityCLI::UtilityCLI(int argc, const char *argv[]) {
 }
 
 void UtilityCLI::InitializeAlgorithms() {
-  algorithms_runners_["ACO"] = &UtilityCLI::ACO;
-  algorithms_runners_["SLE"] = &UtilityCLI::SLE;
-  algorithms_runners_["WNG"] = &UtilityCLI::Winograd;
+  algorithms_runners_["ACO"] = &UtilityCLI::RunACO;
+  algorithms_runners_["SLE"] = &UtilityCLI::RunSLE;
+  algorithms_runners_["WNG"] = &UtilityCLI::RunWinograd;
 }
 
 void UtilityCLI::Exec() {
@@ -31,7 +31,7 @@ void UtilityCLI::Exec() {
   (this->*algorithms_runners_[algorithm])();
 }
 
-void UtilityCLI::ACO() {
+void UtilityCLI::RunACO() {
   cout << "ACO RUN\n";
   FlagValues file = command_line_.GetFlagValues("--file");
   FlagValues repeats = command_line_.GetFlagValues("--num-repeats");
@@ -39,15 +39,17 @@ void UtilityCLI::ACO() {
   cout << repeats.front() << " repeats\n";
 }
 
-void UtilityCLI::SLE() {
+void UtilityCLI::RunSLE() {
   cout << "SLE RUN\n";
+  // SLE runner;
   FlagValues file = command_line_.GetFlagValues("--file");
+  // runner.Load(file.front());
   FlagValues repeats = command_line_.GetFlagValues("--num-repeats");
   cout << file.front() << " input file\n";
   cout << repeats.front() << " repeats\n";
 }
 
-void UtilityCLI::Winograd() {
+void UtilityCLI::RunWinograd() {
   cout << "Winograd RUN\n";
   FlagValues file = command_line_.GetFlagValues("--file");
   FlagValues repeats = command_line_.GetFlagValues("--num-repeats");

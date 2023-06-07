@@ -12,9 +12,9 @@ int main(int argc, const char* argv[]) {
     UtilityCLI utility(argc, argv);
     utility.Exec();
     exit_code = 0;
-  } catch (invalid_argument ex) {
+  } catch (const invalid_argument& ex) {
     cerr << "Input command error: " << ex.what() << "\n";
-  } catch (string ex) {
+  } catch (const string& ex) {
     cerr << "Algorithm execution error: " << ex << "\n";
   } catch (...) {
     cerr << "Unknown execution error occurred.\n";

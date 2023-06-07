@@ -2,11 +2,14 @@
 #define SRC_UTILITY_CLI_UTILITY_CLI_H_
 
 #include <cmd_args/cmd_args.h>
+#include <sle_algorithm/sle.h>
 
 #include <iostream>
 #include <list>
 #include <map>
 #include <string>
+
+// #include "../algorithms/sle_algorithm/sle.h"
 
 using hhullen::Argument;
 using hhullen::CMDArgs;
@@ -36,9 +39,9 @@ class UtilityCLI {
 
   void InitializeAlgorithms();
 
-  void ACO();
-  void SLE();
-  void Winograd();
+  void RunACO();
+  void RunSLE();
+  void RunWinograd();
 
   void WriteOutFile();
 };

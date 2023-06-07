@@ -6,23 +6,22 @@
 #include <string>
 
 using hhullen::Matrix;
-using std::string;
 
 namespace s21 {
+using Str = std::string;
 
 class SLE {
  public:
   SLE();
   ~SLE();
-  void Load(string &file_path);
-  void Save(string &file_path);
+  void Load(Str &file_path);
+  void Save(Str &file_path);
   void SolveUsual();
   void SolveParallel();
   const Matrix GetVariables();
 
  private:
   Matrix extended_;
-  Matrix variables_;
 
   void VerifyCorrectness();
 };
