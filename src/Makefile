@@ -1,8 +1,3 @@
-t: clean libmatrix.a libalgorithms.a
-	g++ -g --std=c++17 main.cc -I include -I algorithms -L ./ -lmatrix -lalgorithms
-
-
-
 MAIN_PROJ_NAME=Parallels
 TEST_DIR=tests
 ALGORITHMS_DIR=algorithms
@@ -97,5 +92,10 @@ clean:
 	$(DELETE_FOLDER) $(TO_DELETE_FOLDERS)
 	$(DELETE_FILE) $(TO_DELETE_FILES)
 
-prl_cli:
+cli: clean libmatrix.a libalgorithms.a
+	g++ -g --std=c++17 main.cc -I include -I algorithms \
+	-L ./ -lmatrix -lalgorithms -o $(CLI_EXECUTABLE)
+
+	./$(CLI_EXECUTABLE) SLE -f tests/dataset/marix_correct.txt -n 5
+
 	

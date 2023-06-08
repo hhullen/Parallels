@@ -9,11 +9,10 @@
 #include <map>
 #include <string>
 
-// #include "../algorithms/sle_algorithm/sle.h"
-
 using hhullen::Argument;
 using hhullen::CMDArgs;
 using hhullen::Flag;
+using std::atol;
 
 namespace s21 {
 

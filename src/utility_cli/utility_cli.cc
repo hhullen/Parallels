@@ -8,7 +8,7 @@ UtilityCLI::UtilityCLI(int argc, const char *argv[]) {
   Argument file_path = Argument("path", Argument::Type::Path, "");
   Flag input_file_flag = Flag("file", 'f', "", {file_path});
 
-  Argument repeats = Argument("repeats", Argument::Type::Int, "");
+  Argument repeats = Argument("repeats", Argument::Type::UInt, "");
   Flag repeats_flag = Flag("num-repeats", 'n', "", {repeats});
 
   command_line_.AddArguments({algorithm});
@@ -40,13 +40,12 @@ void UtilityCLI::RunACO() {
 }
 
 void UtilityCLI::RunSLE() {
-  cout << "SLE RUN\n";
-  // SLE runner;
   FlagValues file = command_line_.GetFlagValues("--file");
-  // runner.Load(file.front());
   FlagValues repeats = command_line_.GetFlagValues("--num-repeats");
-  cout << file.front() << " input file\n";
-  cout << repeats.front() << " repeats\n";
+  Str file_path = file.front();
+  size_t repeat = atol(repeats.front().data());
+  SLE runner;
+  runner.Load(file_path);
 }
 
 void UtilityCLI::RunWinograd() {
