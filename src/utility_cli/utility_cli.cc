@@ -33,19 +33,23 @@ void UtilityCLI::Exec() {
 
 void UtilityCLI::RunACO() {
   cout << "ACO RUN\n";
+  timer_.Reset();
   FlagValues file = command_line_.GetFlagValues("--file");
   FlagValues repeats = command_line_.GetFlagValues("--num-repeats");
   cout << file.front() << " input file\n";
   cout << repeats.front() << " repeats\n";
+  StopAndReportTimer("ACO Finished");
 }
 
 void UtilityCLI::RunSLE() {
+  timer_.Reset();
   FlagValues file = command_line_.GetFlagValues("--file");
   FlagValues repeats = command_line_.GetFlagValues("--num-repeats");
   Str file_path = file.front();
   size_t repeat = atol(repeats.front().data());
   SLE runner;
   runner.Load(file_path);
+  StopAndReportTimer("ACO Finished");
 }
 
 void UtilityCLI::RunWinograd() {
@@ -64,6 +68,12 @@ void UtilityCLI::WriteOutFile() {
   //   return;
   // }
   // graph_.ExportGraphToDot(file_path);
+}
+
+void UtilityCLI::StopAndReportTimer(const Str &message) {
+  DTime dt = timer_.Elapsed();
+  cout << (message + ": " + dt.SHours() + ":" + dt.SMin() + ":" + dt.SSec() +
+           "." + dt.SMs(3) + "\n");
 }
 
 }  // namespace s21

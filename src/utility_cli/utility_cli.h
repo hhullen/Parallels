@@ -3,6 +3,7 @@
 
 #include <cmd_args/cmd_args.h>
 #include <sle_algorithm/sle.h>
+#include <timer/timer.h>
 
 #include <iostream>
 #include <list>
@@ -11,12 +12,12 @@
 
 using hhullen::Argument;
 using hhullen::CMDArgs;
+using hhullen::DTime;
 using hhullen::Flag;
+using hhullen::Timer;
 using std::atol;
 
 namespace s21 {
-
-using Str = std::string;
 
 using std::atoi;
 using std::cout;
@@ -35,6 +36,7 @@ class UtilityCLI {
  private:
   map<std::string, void (UtilityCLI::*)()> algorithms_runners_;
   CMDArgs command_line_;
+  Timer timer_;
 
   void InitializeAlgorithms();
 
@@ -43,6 +45,7 @@ class UtilityCLI {
   void RunWinograd();
 
   void WriteOutFile();
+  void StopAndReportTimer(const Str& message);
 };
 
 }  // namespace s21
