@@ -11,7 +11,7 @@ class Flag {
   using RegEx = std::regex;
 
  public:
-  Flag();
+  Flag() = delete;
   Flag(const Str& long_name, const char short_name, const Str& help,
        const std::initializer_list<Argument>& args);
 
@@ -29,8 +29,6 @@ class Flag {
   const char short_name_ = '\0';
   const Str help_ = "no help";
 };
-
-Flag::Flag() {}
 
 Flag::Flag(const Str& long_name, const char short_name, const Str& help,
            const std::initializer_list<Argument>& args)

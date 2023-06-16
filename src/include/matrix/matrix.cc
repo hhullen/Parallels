@@ -143,7 +143,7 @@ bool Matrix::IsEqual(const Matrix& other) const {
  */
 void Matrix::Summarize(const Matrix& other) {
   if (rows_ != other.rows_ || cols_ != other.cols_) {
-    throw invalid_argument("Summation the matrix that is not square");
+    throw invalid_argument("Matrix that is not square");
   }
 
   for (int i = 0; i < rows_; ++i) {
@@ -161,12 +161,49 @@ void Matrix::Summarize(const Matrix& other) {
  */
 void Matrix::SummarizeRows(const int base_row, const int summ_row) {
   if (base_row < 0 || base_row >= rows_ || summ_row < 0 || summ_row >= rows_) {
-    throw out_of_range(
-        "Summation the matrix rows with indices that is out of matrix size");
+    throw out_of_range("Matrix rows with indices that is out of matrix size");
   }
 
   for (int col = 0; col < cols_; ++col) {
     matrix_[summ_row][col] += matrix_[base_row][col];
+  }
+}
+
+/**
+ * @brief Add to some row another row multiplied by any number
+ *
+ * @param base_row const int type index of row to multiply by number and add to
+ * another
+ * @param num const double type number to multiply base_row on
+ * @param summ_row const int type index of row to be simmarized with another
+ */
+void Matrix::AddRowMultiplyedByNumberToRow(const int base_row, const double num,
+                                           const int summ_row) {
+  if (base_row < 0 || base_row >= rows_ || summ_row < 0 || summ_row >= rows_) {
+    throw out_of_range("Matrix rows with indices that is out of matrix size");
+  }
+
+  for (int col = 0; col < cols_; ++col) {
+    matrix_[summ_row][col] += matrix_[base_row][col] * num;
+  }
+}
+
+/**
+ * @brief Add to some row another row summarized with any number
+ *
+ * @param base_row const int type index of row to summarize with number and add
+ * to another
+ * @param num const double type number to summarize base_row with
+ * @param summ_row const int type index of row to be simmarized with another
+ */
+void Matrix::AddRowSummarizedByNumberToRow(const int base_row, const double num,
+                                           const int summ_row) {
+  if (base_row < 0 || base_row >= rows_ || summ_row < 0 || summ_row >= rows_) {
+    throw out_of_range("Matrix rows with indices that is out of matrix size");
+  }
+
+  for (int col = 0; col < cols_; ++col) {
+    matrix_[summ_row][col] += matrix_[base_row][col] + num;
   }
 }
 
@@ -539,14 +576,6 @@ void Matrix::copy_data_other_to_this_matrix(double** other_matrix) {
   }
 }
 
-void Matrix::copy_data_this_to_other_matrix(double** other_matrix) {
-  for (int i = 0; i < rows_; ++i) {
-    for (int j = 0; j < cols_; ++j) {
-      other_matrix[i][j] = matrix_[i][j];
-    }
-  }
-}
-
 void Matrix::calculate_multiplied_matrix_element(const Matrix& other, int i,
                                                  int j, double* res) {
   for (int k = 0; k < cols_; k += 1) {
@@ -578,12 +607,11 @@ double Matrix::calculate_3d_Determinant() {
 }
 
 double Matrix::calculate_Gauss_Determinant() {
-  Matrix buffer(cols_, rows_);
+  Matrix buffer(*this);
   double returnable = 0.0;
   int row_constrain = 0;
   bool is_det_zero = false;
 
-  copy_data_this_to_other_matrix(buffer.matrix_);
   for (int i = 0; !is_det_zero && i < buffer.cols_; ++i) {
     for (int j = buffer.rows_ - 1; !is_det_zero && j > row_constrain; j -= 1) {
       process_the_row(&buffer, j, i, &is_det_zero);
@@ -592,8 +620,6 @@ double Matrix::calculate_Gauss_Determinant() {
   }
   if (!is_det_zero) {
     returnable = multiply_diagonal(&buffer);
-  } else {
-    returnable = 0.0;
   }
 
   return returnable;
@@ -723,10 +749,12 @@ void Matrix::ReadLineToMatrixRow(const string& line, int row) {
 }
 
 void Matrix::ShiftToNextNumber(const string& line, size_t* i) {
-  while (isdigit(line.data()[*i]) && *i < line.size()) {
+  while ((isdigit(line.data()[*i]) || line.data()[*i] == '.') &&
+         *i < line.size()) {
     ++(*i);
   }
-  while (!isdigit(line.data()[*i]) && *i < line.size()) {
+  while (!(isdigit(line.data()[*i]) || line.data()[*i] == '.') &&
+         *i < line.size()) {
     ++(*i);
   }
   --(*i);

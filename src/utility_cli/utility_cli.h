@@ -29,8 +29,11 @@ using FlagValues = std::list<Str>;
 
 class UtilityCLI {
  public:
-  UtilityCLI() {}
+  UtilityCLI() = delete;
+  UtilityCLI(const UtilityCLI& other) = delete;
+  UtilityCLI(const UtilityCLI&& other) = delete;
   UtilityCLI(int argc, const char* argv[]);
+
   void Exec();
 
  private:

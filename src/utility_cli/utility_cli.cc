@@ -3,13 +3,13 @@
 namespace s21 {
 
 UtilityCLI::UtilityCLI(int argc, const char *argv[]) {
-  Argument algorithm = Argument("algorithm", Argument::Type::Str, "");
+  Argument algorithm("algorithm", Argument::Type::Str, "");
 
-  Argument file_path = Argument("path", Argument::Type::Path, "");
-  Flag input_file_flag = Flag("file", 'f', "", {file_path});
+  Argument file_path("path", Argument::Type::Path, "");
+  Flag input_file_flag("file", 'f', "", {file_path});
 
-  Argument repeats = Argument("repeats", Argument::Type::UInt, "");
-  Flag repeats_flag = Flag("num-repeats", 'n', "", {repeats});
+  Argument repeats("repeats", Argument::Type::UInt, "");
+  Flag repeats_flag("num-repeats", 'n', "", {repeats});
 
   command_line_.AddArguments({algorithm});
   command_line_.AddFlags({input_file_flag, repeats_flag});
@@ -42,14 +42,24 @@ void UtilityCLI::RunACO() {
 }
 
 void UtilityCLI::RunSLE() {
-  timer_.Reset();
   FlagValues file = command_line_.GetFlagValues("--file");
   FlagValues repeats = command_line_.GetFlagValues("--num-repeats");
   Str file_path = file.front();
   size_t repeat = atol(repeats.front().data());
   SLE runner;
   runner.Load(file_path);
-  StopAndReportTimer("ACO Finished");
+
+  timer_.Reset();
+  for (size_t i = 0; i < repeat; ++i) {
+    runner.SolveUsual();
+  }
+  StopAndReportTimer("ACO usual Finished");
+
+  timer_.Reset();
+  for (size_t i = 0; i < repeat; ++i) {
+    runner.SolveParallel();
+  }
+  StopAndReportTimer("ACO parallel Finished");
 }
 
 void UtilityCLI::RunWinograd() {

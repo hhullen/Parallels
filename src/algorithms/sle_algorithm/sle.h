@@ -14,16 +14,21 @@ class SLE {
  public:
   SLE();
   ~SLE();
-  void Load(Str &file_path);
-  void Save(Str &file_path);
+  void Load(const Str &file_path);
+  void Save(const Str &file_path);
   void SolveUsual();
   void SolveParallel();
   const Matrix GetVariables();
 
  private:
   Matrix extended_;
+  Matrix variables_;
 
   void VerifyCorrectness();
+  void GaussForward();
+  void SetElementToZero(const int row, const int col);
+  int GetAnotherRowIdxWithNonZeroElement(const int row, const int col);
+  void MakeUnitsDiagonally();
 };
 
 }  // namespace s21

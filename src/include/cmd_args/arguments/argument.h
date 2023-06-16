@@ -15,7 +15,7 @@ class Argument {
  public:
   enum class Type { Int, UInt, Float, Str, Path };
 
-  Argument();
+  Argument() = delete;
   Argument(const Str &name, Argument::Type type, const Str &help);
   ~Argument();
 
@@ -36,8 +36,6 @@ class Argument {
   void ValidateArg(const Str &arg, Type type);
   void InitializeRegex();
 };
-
-Argument::Argument() { InitializeRegex(); }
 
 Argument::Argument(const Str &name, Argument::Type type, const Str &help)
     : name_(name), help_(help), type_(type) {

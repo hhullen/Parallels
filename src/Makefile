@@ -74,9 +74,9 @@ check:
 	clang-format -n --style=Google $(CHECK_FILES)
 
 tests: libmatrix.a libalgorithms.a
-	$(COMPILER) $(STD) $(TESTBUILD_FILES) $(CLI_BULD_FILES) $(TEST_FLAGS) \
-	-I $(INCLUDE_DIR) -I $(ALGORITHMS_DIR) $(LIBS_TO_COMPILE) -o $(TEST_EXECUTABLE)
-	.$(SEP)$(TEST_EXECUTABLE)
+	# $(COMPILER) $(STD) $(TESTBUILD_FILES) $(CLI_BULD_FILES) $(TEST_FLAGS) \
+	# -I $(INCLUDE_DIR) -I $(ALGORITHMS_DIR) $(LIBS_TO_COMPILE) -o $(TEST_EXECUTABLE)
+	# .$(SEP)$(TEST_EXECUTABLE)
 
 gcov_report: gcov_build
 	lcov -t "test" -o test.info -c -d .
@@ -93,9 +93,10 @@ clean:
 	$(DELETE_FILE) $(TO_DELETE_FILES)
 
 cli: clean libmatrix.a libalgorithms.a
-	g++ -g --std=c++17 main.cc -I include -I algorithms \
+	# !!! $(CODE_DIAG_FLAGS)
+	g++ -g -O3 $(STD) main.cc -I $(INCLUDE_DIR) -I $(ALGORITHMS_DIR) \
 	-L ./ -lmatrix -lalgorithms -o $(CLI_EXECUTABLE)
 
-	./$(CLI_EXECUTABLE) SLE -f tests/dataset/marix_correct.txt -n 5
+	./$(CLI_EXECUTABLE) SLE -f tests/dataset/marix_correct.txt -n 50
 
 	
