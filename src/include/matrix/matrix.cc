@@ -767,6 +767,9 @@ void Matrix::WriteMatrixSize(ofstream& file) {
 void Matrix::WriteMatrix(ofstream& file) {
   for (int i = 0; i < get_rows(); ++i) {
     for (int j = 0; j < get_cols(); ++j) {
+      if (this->operator()(i, j) == 0) {
+        this->operator()(i, j) = 0;
+      }
       file << this->operator()(i, j) << " ";
     }
     file << "\n";
