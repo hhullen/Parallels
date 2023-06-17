@@ -22,13 +22,14 @@ class SLE {
 
  private:
   Matrix extended_;
-  Matrix variables_;
 
   void VerifyCorrectness();
+
   void GaussForward();
   void SetElementToZero(const int row, const int col);
   int GetAnotherRowIdxWithNonZeroElement(const int row, const int col);
   void MakeUnitsDiagonally();
+  void GaussBackward();
 };
 
 }  // namespace s21

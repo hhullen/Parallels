@@ -2,7 +2,8 @@
 
 namespace s21 {
 
-UtilityCLI::UtilityCLI(int argc, const char *argv[]) {
+UtilityCLI::UtilityCLI(int argc, const char *argv[])
+    : file_path_(""), repeats_(0) {
   Argument algorithm("algorithm", Argument::Type::Str, "");
 
   Argument file_path("path", Argument::Type::Path, "");
@@ -34,29 +35,25 @@ void UtilityCLI::Exec() {
 void UtilityCLI::RunACO() {
   cout << "ACO RUN\n";
   timer_.Reset();
-  FlagValues file = command_line_.GetFlagValues("--file");
-  FlagValues repeats = command_line_.GetFlagValues("--num-repeats");
-  cout << file.front() << " input file\n";
-  cout << repeats.front() << " repeats\n";
+  ReadCMDArguments();
+  cout << file_path_ << " input file\n";
+  cout << repeats_ << " repeats\n";
   StopAndReportTimer("ACO Finished");
 }
 
 void UtilityCLI::RunSLE() {
-  FlagValues file = command_line_.GetFlagValues("--file");
-  FlagValues repeats = command_line_.GetFlagValues("--num-repeats");
-  Str file_path = file.front();
-  size_t repeat = atol(repeats.front().data());
+  ReadCMDArguments();
   SLE runner;
-  runner.Load(file_path);
+  runner.Load(file_path_);
 
   timer_.Reset();
-  for (size_t i = 0; i < repeat; ++i) {
+  for (size_t i = 0; i < repeats_; ++i) {
     runner.SolveUsual();
   }
   StopAndReportTimer("ACO usual Finished");
 
   timer_.Reset();
-  for (size_t i = 0; i < repeat; ++i) {
+  for (size_t i = 0; i < repeats_; ++i) {
     runner.SolveParallel();
   }
   StopAndReportTimer("ACO parallel Finished");
@@ -64,10 +61,9 @@ void UtilityCLI::RunSLE() {
 
 void UtilityCLI::RunWinograd() {
   cout << "Winograd RUN\n";
-  FlagValues file = command_line_.GetFlagValues("--file");
-  FlagValues repeats = command_line_.GetFlagValues("--num-repeats");
-  cout << file.front() << " input file\n";
-  cout << repeats.front() << " repeats\n";
+  ReadCMDArguments();
+  cout << file_path_ << " input file\n";
+  cout << repeats_ << " repeats\n";
 }
 
 void UtilityCLI::WriteOutFile() {
@@ -84,6 +80,13 @@ void UtilityCLI::StopAndReportTimer(const Str &message) {
   DTime dt = timer_.Elapsed();
   cout << (message + ": " + dt.SHours() + ":" + dt.SMin() + ":" + dt.SSec() +
            "." + dt.SMs(3) + "\n");
+}
+
+void UtilityCLI::ReadCMDArguments() {
+  FlagValues file = command_line_.GetFlagValues("--file");
+  FlagValues repeats = command_line_.GetFlagValues("--num-repeats");
+  Str file_path_ = file.front();
+  size_t repeats_ = atol(repeats.front().data());
 }
 
 }  // namespace s21

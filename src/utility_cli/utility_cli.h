@@ -39,6 +39,8 @@ class UtilityCLI {
  private:
   map<std::string, void (UtilityCLI::*)()> algorithms_runners_;
   CMDArgs command_line_;
+  size_t repeats_;
+  Str file_path_;
   Timer timer_;
 
   void InitializeAlgorithms();
@@ -49,6 +51,7 @@ class UtilityCLI {
 
   void WriteOutFile();
   void StopAndReportTimer(const Str& message);
+  void ReadCMDArguments();
 };
 
 }  // namespace s21
