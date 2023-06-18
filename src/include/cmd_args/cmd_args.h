@@ -43,10 +43,6 @@ class CMDArgs {
   FlagsStruct flags_;
 
   Tokens tokens_;
-  Str search_token_;
-
-  std::function<bool(const FlagsStructElement&)> class_flag_search_func;
-  std::function<bool(const ParsedFlagsElement&)> parsed_flag_search_func;
 
   void CopyToThis(int argc, const char* argv[]);
   void CheckIfInCMDStruct(const Str& name);
@@ -61,17 +57,7 @@ class CMDArgs {
   void ThrowNoSpecidiedName(const Str& name);
 };
 
-CMDArgs::CMDArgs() {
-  class_flag_search_func = [this](const FlagsStructElement& element) {
-    return element.first.first == search_token_ ||
-           element.first.second == search_token_;
-  };
-  parsed_flag_search_func = [this](const ParsedFlagsElement& element) {
-    return element.first.first == search_token_ ||
-           element.first.second == search_token_;
-  };
-  arg_iter_ = arguments_.end();
-}
+CMDArgs::CMDArgs() { arg_iter_ = arguments_.end(); }
 CMDArgs::~CMDArgs() {}
 
 void CMDArgs::AddArguments(const std::initializer_list<Argument>& args) {
@@ -95,16 +81,22 @@ Str CMDArgs::GetArgument(const Str& name) {
 }
 
 std::list<Str> CMDArgs::GetFlagValues(const Str& name) {
-  search_token_ = name;
-  FlagsStructIterator struct_iter =
-      std::find_if(flags_.begin(), flags_.end(), class_flag_search_func);
+  FlagsStructIterator struct_iter = std::find_if(
+      flags_.begin(), flags_.end(), [name](const FlagsStructElement& element) {
+        return element.first.first == name || element.first.second == name;
+      });
+
   if (struct_iter == flags_.end()) {
     throw std::invalid_argument("Struct error: Attempt get flag \'" + name +
                                 "\' did not initialized.");
   }
-  ParsedFlagsIterator parsed_iter =
-      std::find_if(optional_.begin(), optional_.end(), parsed_flag_search_func);
-  search_token_.clear();
+
+  ParsedFlagsIterator parsed_iter = std::find_if(
+      optional_.begin(), optional_.end(),
+      [name](const ParsedFlagsElement& element) {
+        return element.first.first == name || element.first.second == name;
+      });
+
   if (parsed_iter == optional_.end()) {
     ThrowNoSpecidiedName(name);
   }
@@ -141,11 +133,9 @@ void CMDArgs::CopyToThis(int argc, const char* argv[]) {
 }
 
 void CMDArgs::CheckIfInCMDStruct(const Str& name) {
-  search_token_ = name;
   ArgumentsStructIterator iter = std::find_if(
       arguments_.begin(), arguments_.end(),
-      [this](const Argument& arg) { return arg.GetName() == search_token_; });
-  search_token_.clear();
+      [name](const Argument& arg) { return arg.GetName() == name; });
   if (iter == arguments_.end()) {
     throw std::invalid_argument("Struct error: Attempt get argument \'" + name +
                                 "\' did not initialized.");
@@ -159,10 +149,10 @@ void CMDArgs::CheckIsArgExists(const Str& name) {
 }
 
 Flag CMDArgs::GetFlagFromToken(const Str& token) {
-  search_token_ = token;
-  FlagsStructIterator iter =
-      std::find_if(flags_.begin(), flags_.end(), class_flag_search_func);
-  search_token_.clear();
+  FlagsStructIterator iter = std::find_if(
+      flags_.begin(), flags_.end(), [token](const FlagsStructElement& element) {
+        return element.first.first == token || element.first.second == token;
+      });
 
   if (iter == flags_.end()) {
     throw std::invalid_argument("Unknown flag \'" + token + "\'specified.");
@@ -209,13 +199,20 @@ void CMDArgs::SetParsedValueForFlag(const Str& value, Flag& flag) {
 }
 
 void CMDArgs::CheckFlagUniqueness(const Str& name_long, const Str& name_short) {
-  search_token_ = name_long;
   ParsedFlagsIterator iter_name_long =
-      std::find_if(optional_.begin(), optional_.end(), parsed_flag_search_func);
-  search_token_ = name_short;
+      std::find_if(optional_.begin(), optional_.end(),
+                   [name_long](const ParsedFlagsElement& element) {
+                     return element.first.first == name_long ||
+                            element.first.second == name_long;
+                   });
+
   ParsedFlagsIterator iter_name_short =
-      std::find_if(optional_.begin(), optional_.end(), parsed_flag_search_func);
-  search_token_.clear();
+      std::find_if(optional_.begin(), optional_.end(),
+                   [name_short](const ParsedFlagsElement& element) {
+                     return element.first.first == name_short ||
+                            element.first.second == name_short;
+                   });
+
   if (iter_name_long != optional_.end() || iter_name_short != optional_.end()) {
     throw std::invalid_argument(
         "CMD structure error: Double flag definition [" + name_long + " " +

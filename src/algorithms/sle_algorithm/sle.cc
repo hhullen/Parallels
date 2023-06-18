@@ -32,4 +32,32 @@ const Matrix SLE::GetVariables() {
   return variables;
 }
 
+void SLE::SetElementToZero(const int row, const int col) {
+  if (extended_(row, col) != 0) {
+    // int another_row = GetAnotherRowIdxWithNonZeroElement(row, col);
+    int another_row = col;
+    double factor = -(extended_(row, col) / extended_(another_row, col));
+    for (int i = 0; i < extended_.get_cols(); ++i) {
+      extended_(row, i) += extended_(another_row, i) * factor;
+    }
+  }
+}
+
+// int SLE::GetAnotherRowIdxWithNonZeroElement(const int row, const int col) {
+//   int new_row = row - 1;
+//   if (extended_(new_row, col) == 0) {
+//     bool is_found = false;
+//     int i = extended_.get_rows();
+//     for (; !is_found && i > 0;) {
+//       --i;
+//       is_found = (i != row) && (extended_(i, col) != 0);
+//     }
+//     if (!is_found) {
+//       throw Str("No solution for the matrix: one of columns is full zero.");
+//     }
+//     new_row = i;
+//   }
+//   return new_row;
+// }
+
 }  // namespace s21

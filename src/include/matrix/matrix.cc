@@ -749,11 +749,13 @@ void Matrix::ReadLineToMatrixRow(const string& line, int row) {
 }
 
 void Matrix::ShiftToNextNumber(const string& line, size_t* i) {
-  while ((isdigit(line.data()[*i]) || line.data()[*i] == '.') &&
+  while ((isdigit(line.data()[*i]) || line.data()[*i] == '.' ||
+          line.data()[*i] == '-') &&
          *i < line.size()) {
     ++(*i);
   }
-  while (!(isdigit(line.data()[*i]) || line.data()[*i] == '.') &&
+  while (!(isdigit(line.data()[*i]) || line.data()[*i] == '.' ||
+           line.data()[*i] == '-') &&
          *i < line.size()) {
     ++(*i);
   }
