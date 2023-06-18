@@ -3,6 +3,7 @@
 
 #include <matrix/matrix.h>
 
+#include <map>
 #include <memory>
 #include <mutex>
 #include <queue>
@@ -35,11 +36,11 @@ class SLE {
   int threads_ = 2;
   Mutex this_thread_;
 
-  std::queue<Thread> workers_;
+  std::map<std::pair<int, int>, Thread> workers_;
 
   void VerifyCorrectness();
   void SetElementToZero(const int row, const int col);
-  int GetAnotherRowIdxWithNonZeroElement(const int row, const int col);
+  // int GetAnotherRowIdxWithNonZeroElement(const int row, const int col);
 
   void GaussForward();
   void MakeUnitsDiagonally();

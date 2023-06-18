@@ -50,7 +50,7 @@ class UtilityCLI {
   void RunWinograd();
 
   void WriteOutFile();
-  void StopAndReportTimer(const Str& message);
+  double StopAndReportTimer(const Str& message);
   void ReadCMDArguments();
 };
 

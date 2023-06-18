@@ -4,26 +4,35 @@ namespace s21 {
 
 void SLE::SolveParallel() {
   GaussForwardPrl();
-  extended_.Save("thread.txt");
+  // extended_.Save("thread.txt");
   MakeUnitsDiagonallyPrl();
-  extended_.Save("thread_01.txt");
+  // extended_.Save("thread_01.txt");
   GaussBackwardPrl();
-  extended_.Save("thread_02.txt");
+  // extended_.Save("thread_02.txt");
 }
 
 void SLE::GaussForwardPrl() {
   int rows = extended_.get_rows() - 1;
   int cols = extended_.get_cols() - 1;
   for (int col = 0; col < cols; ++col) {
-    this_thread_.lock();
     Mutex local;
     for (int row = rows; row > col; --row) {
       local.lock();
-      workers_.push(
-          Thread(&SLE::SetElementToZeroThread, this, row, col, &local));
-      workers_.back().detach();
+      workers_[{row, col}] =
+          Thread(&SLE::SetElementToZeroThread, this, row, col, &local);
       if (workers_.size() < threads_) {
         local.unlock();
+      }
+    }
+
+    for (int row = rows; row > col; --row) {
+      if (!workers_[{row, col}].joinable()) {
+        workers_[{row, col}].~thread();
+        workers_.erase({row, col});
+      } else {
+        workers_[{row, col}].join();
+        workers_[{row, col}].~thread();
+        workers_.erase({row, col});
       }
     }
   }
@@ -31,11 +40,7 @@ void SLE::GaussForwardPrl() {
 
 void SLE::SetElementToZeroThread(const int row, const int col, Mutex* local) {
   SetElementToZero(row, col);
-  workers_.pop();
   local->unlock();
-  if (workers_.empty()) {
-    this_thread_.unlock();
-  }
 }
 
 void SLE::MakeUnitsDiagonallyPrl() {

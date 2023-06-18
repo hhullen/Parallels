@@ -48,15 +48,19 @@ void UtilityCLI::RunSLE() {
 
   timer_.Reset();
   for (size_t i = 0; i < repeats_; ++i) {
+    // runner.Load(file_path_);
     runner.SolveUsual();
   }
-  StopAndReportTimer("ACO usual Finished");
+  double usual_time = StopAndReportTimer("SLE usual Finished");
 
   timer_.Reset();
   for (size_t i = 0; i < repeats_; ++i) {
+    // runner.Load(file_path_);
     runner.SolveParallel();
   }
-  StopAndReportTimer("ACO parallel Finished");
+  double parallel_time = StopAndReportTimer("SLE parallel Finished");
+  std::cout << "Usual in " << usual_time / parallel_time
+            << " longer than Parallel\n";
 }
 
 void UtilityCLI::RunWinograd() {
@@ -76,17 +80,18 @@ void UtilityCLI::WriteOutFile() {
   // graph_.ExportGraphToDot(file_path);
 }
 
-void UtilityCLI::StopAndReportTimer(const Str &message) {
+double UtilityCLI::StopAndReportTimer(const Str &message) {
   DTime dt = timer_.Elapsed();
   cout << (message + ": " + dt.SHours() + ":" + dt.SMin() + ":" + dt.SSec() +
            "." + dt.SMs(3) + "\n");
+  return static_cast<double>(dt.InMs());
 }
 
 void UtilityCLI::ReadCMDArguments() {
   FlagValues file = command_line_.GetFlagValues("--file");
   FlagValues repeats = command_line_.GetFlagValues("--num-repeats");
-  Str file_path_ = file.front();
-  size_t repeats_ = atol(repeats.front().data());
+  file_path_ = file.front();
+  repeats_ = atol(repeats.front().data());
 }
 
 }  // namespace s21

@@ -58,12 +58,12 @@ endif
 all: clean tests prl_cli check
 
 libmatrix.a:
-	$(COMPILER) -O3 -c $(INCLUDE_DIR)$(SEP)matrix$(SEP)*.cc
+	$(COMPILER)  -c $(INCLUDE_DIR)$(SEP)matrix$(SEP)*.cc
 	ar rc libmatrix.a matrix.o
 	ranlib libmatrix.a
 
 libalgorithms.a:
-	$(COMPILER) -O3 -c $(ALGORITHMS_BUILD_FILES) -I include
+	$(COMPILER)  -c $(ALGORITHMS_BUILD_FILES) -I include
 	ar rc libalgorithms.a sle.o winograd.o aco.o
 	ranlib libalgorithms.a
 
@@ -94,9 +94,9 @@ clean:
 
 cli: clean libmatrix.a libalgorithms.a
 	# !!! $(CODE_DIAG_FLAGS)
-	g++ -g -O3 $(STD) main.cc -I $(INCLUDE_DIR) -I $(ALGORITHMS_DIR) \
+	g++ -g  $(STD) main.cc -I $(INCLUDE_DIR) -I $(ALGORITHMS_DIR) \
 	-L ./ -lmatrix -lalgorithms -o $(CLI_EXECUTABLE)
 
-	./$(CLI_EXECUTABLE) SLE -f tests/dataset/marix_correct.txt -n 50
+	./$(CLI_EXECUTABLE) SLE -f tests/dataset/marix_correct.txt -n 5000
 
 	

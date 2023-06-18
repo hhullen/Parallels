@@ -4,7 +4,6 @@ namespace s21 {
 
 void SLE::SolveUsual() {
   GaussForward();
-  extended_.Save("thread.txt");
   MakeUnitsDiagonally();
   GaussBackward();
 }
