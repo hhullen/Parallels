@@ -3,6 +3,9 @@
 namespace s21 {
 
 void SLE::SolveParallel() {
+  // workers_.resize(threads_);
+
+  extended_ = Matrix(950, 951);
   GaussForwardPrl();
   // extended_.Save("thread.txt");
   MakeUnitsDiagonallyPrl();
@@ -12,29 +15,35 @@ void SLE::SolveParallel() {
 }
 
 void SLE::GaussForwardPrl() {
-  int rows = extended_.get_rows() - 1;
   int cols = extended_.get_cols() - 1;
   for (int col = 0; col < cols; ++col) {
-    Mutex local;
-    for (int row = rows; row > col; --row) {
-      local.lock();
-      workers_[{row, col}] =
-          Thread(&SLE::SetElementToZeroThread, this, row, col, &local);
-      if (workers_.size() < threads_) {
-        local.unlock();
+    int rows = extended_.get_rows() - 1;
+
+    if (threads_ < (rows - col)) {
+      int shift = (rows - col) / threads_;
+      for (int i = rows, trd = 0; i > col; i -= shift, ++trd) {
+        if (trd == workers_.size() - 1) {
+          shift = i - col + 1;
+        }
+        workers_[trd] = Thread(&SLE::ForwardRunner, this, i, i - shift, col);
+      }
+    } else {
+      for (int i = rows, trd = 0; i > col; --i, ++trd) {
+        workers_[trd] = Thread(&SLE::ForwardRunner, this, i, i - 1, col);
       }
     }
 
-    for (int row = rows; row > col; --row) {
-      if (!workers_[{row, col}].joinable()) {
-        workers_[{row, col}].~thread();
-        workers_.erase({row, col});
-      } else {
-        workers_[{row, col}].join();
-        workers_[{row, col}].~thread();
-        workers_.erase({row, col});
+    for (int i = 0; i < workers_.size(); ++i) {
+      if (workers_[i].joinable()) {
+        workers_[i].join();
       }
     }
+  }
+}
+
+void SLE::ForwardRunner(const int from, const int to, const int col) {
+  for (int row = from; row > to; --row) {
+    SetElementToZero(row, col);
   }
 }
 

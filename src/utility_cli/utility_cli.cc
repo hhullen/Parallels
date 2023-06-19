@@ -48,14 +48,14 @@ void UtilityCLI::RunSLE() {
 
   timer_.Reset();
   for (size_t i = 0; i < repeats_; ++i) {
-    // runner.Load(file_path_);
+    runner.Load(file_path_);
     runner.SolveUsual();
   }
   double usual_time = StopAndReportTimer("SLE usual Finished");
 
   timer_.Reset();
   for (size_t i = 0; i < repeats_; ++i) {
-    // runner.Load(file_path_);
+    runner.Load(file_path_);
     runner.SolveParallel();
   }
   double parallel_time = StopAndReportTimer("SLE parallel Finished");

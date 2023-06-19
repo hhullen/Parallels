@@ -5,7 +5,11 @@
 
 namespace s21 {
 
-SLE::SLE() {}
+SLE::SLE() {
+  if (threads_ < 1) {
+    threads_ = 1;
+  }
+}
 
 SLE::~SLE() {}
 

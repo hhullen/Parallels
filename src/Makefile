@@ -97,6 +97,6 @@ cli: clean libmatrix.a libalgorithms.a
 	g++ -g  $(STD) main.cc -I $(INCLUDE_DIR) -I $(ALGORITHMS_DIR) \
 	-L ./ -lmatrix -lalgorithms -o $(CLI_EXECUTABLE)
 
-	./$(CLI_EXECUTABLE) SLE -f tests/dataset/marix_correct.txt -n 5000
+	./$(CLI_EXECUTABLE) SLE -f tests/dataset/marix_correct_1.txt -n 5
 
 	

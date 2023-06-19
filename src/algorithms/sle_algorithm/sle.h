@@ -32,11 +32,21 @@ class SLE {
 
  private:
   Matrix extended_;
-  // int threads_ = Thread::hardware_concurrency();
-  int threads_ = 2;
+  int threads_ = Thread::hardware_concurrency();
+  // int threads_ = 2;
   Mutex this_thread_;
 
-  std::map<std::pair<int, int>, Thread> workers_;
+  // std::map<std::pair<int, int>, Thread> workers_;
+
+  // struct Worker {
+  //   Worker() : running(true), value(0) {}
+  //   bool running;
+  //   int value;
+  //   Thread thread;
+  //   Mutex *control;
+  // };
+
+  std::vector<Thread> workers_ = std::vector<Thread>(threads_);
 
   void VerifyCorrectness();
   void SetElementToZero(const int row, const int col);
@@ -51,6 +61,7 @@ class SLE {
   void GaussBackwardPrl();
 
   void SetElementToZeroThread(const int row, const int col, Mutex *local);
+  void ForwardRunner(const int from, const int to, const int col);
 };
 
 }  // namespace s21
