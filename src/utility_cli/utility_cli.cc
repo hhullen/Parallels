@@ -82,8 +82,8 @@ double UtilityCLI::StopAndReportTimer(const Str &message) {
 
 void UtilityCLI::ReportRatio(const double usual_time,
                              const double parallel_time) {
-  std::cout << "Usual in " << usual_time / parallel_time
-            << " longer than Parallel\n";
+  std::cout << "Parallel in " << usual_time / parallel_time
+            << " times faster\n";
 }
 
 void UtilityCLI::ReadCMDArguments() {
