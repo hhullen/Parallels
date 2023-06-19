@@ -20,7 +20,7 @@ CHECK_FILES=$(ALGORITHMS_BUILD_FILES:.cc=.h) \
 			$(ALGORITHMS_BUILD_FILES) \
 			$(CLI_DIR)$(SEP)* \
 			main.cc
-CPPCH_SETUP=--enable=all --suppress=missingInclude --suppress=unusedFunction -v --language=c++ $(STD)
+CPPCH_SETUP=--enable=all --suppress=missingInclude --suppress=unusedFunction --suppress=noExplicitConstructor -v --language=c++ $(STD)
 BUILD_DIR=..$(SEP)build
 TO_DELETE_FILES=*.o *.out *.dSYM *.gch *.gcda *.gcno .DS_Store $(TEST_EXECUTABLE) $(CLI_EXECUTABLE) $(CLANG_FILE) \
 				*.info libmatrix.a libalgorithms.a
@@ -94,9 +94,10 @@ clean:
 
 cli: clean libmatrix.a libalgorithms.a
 	# !!! $(CODE_DIAG_FLAGS)
-	g++ -g  $(STD) main.cc -I $(INCLUDE_DIR) -I $(ALGORITHMS_DIR) \
+	g++  $(STD) main.cc -I $(INCLUDE_DIR) -I $(ALGORITHMS_DIR) \
 	-L ./ -lmatrix -lalgorithms -o $(CLI_EXECUTABLE)
 
-	./$(CLI_EXECUTABLE) SLE -f tests/dataset/matrix_correct_1.txt -n 5
+	./$(CLI_EXECUTABLE) SLE -f tests/dataset/matrix_correct_4.txt -n 10000 -t 5
+	./$(CLI_EXECUTABLE) SLE -f tests/dataset/matrix_random_500.txt -n 1 -t 5
 
 	
