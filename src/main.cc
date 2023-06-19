@@ -3,6 +3,7 @@
 using s21::UtilityCLI;
 using std::cerr;
 using std::cout;
+using std::exception;
 using std::invalid_argument;
 using std::string;
 
@@ -16,8 +17,8 @@ int main(int argc, const char* argv[]) {
     cerr << "Input command error: " << ex.what() << "\n";
   } catch (const string& ex) {
     cerr << "Algorithm execution error: " << ex << "\n";
-  } catch (...) {
-    cerr << "Unknown execution error occurred.\n";
+  } catch (const exception& ex) {
+    cerr << "Execution occurred: " << ex.what() << "\n";
   }
   return exit_code;
 }

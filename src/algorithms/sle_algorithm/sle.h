@@ -3,22 +3,16 @@
 
 #include <matrix/matrix.h>
 
-#include <map>
-#include <memory>
-#include <mutex>
-#include <queue>
 #include <string>
 #include <thread>
-
-// #include "worker.h"
+#include <vector>
 
 using hhullen::Matrix;
 
 namespace s21 {
 using Str = std::string;
 using Thread = std::thread;
-using ThreadPtr = std::shared_ptr<Thread>;
-using Mutex = std::mutex;
+using Workers = std::vector<Thread>;
 
 class SLE {
  public:
@@ -33,10 +27,9 @@ class SLE {
  private:
   Matrix extended_;
   // int threads_ = Thread::hardware_concurrency();
-  int threads_ = 10;
-  Mutex this_thread_;
+  int threads_ = 20;
 
-  std::vector<Thread> workers_;
+  Workers workers_;
 
   void VerifyCorrectness();
   void SetElementToZero(const int row, const int col);
@@ -57,6 +50,10 @@ class SLE {
   void RunDiagonallyMultithreadPerSet(const int rows);
   void RunDiagonallyMultithreadPerLine(const int rows);
   void DiagonallyRunner(const int from, const int to);
+
+  void RunBackwardMultithreadPerSet(const int rows);
+  void RunBackwardMultithreadPerLine(const int rows);
+  void BackwardRunner(const int from, const int to);
 
   void CatchWorkers();
 };

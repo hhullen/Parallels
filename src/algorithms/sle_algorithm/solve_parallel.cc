@@ -85,10 +85,28 @@ void SLE::DiagonallyRunner(const int from, const int to) {
 
 void SLE::GaussBackwardPrl() {
   for (int col = extended_.get_rows() - 1; col >= 0; --col) {
-    for (int row = col - 1; row >= 0; --row) {
-      double factor = extended_(row, col);
-      extended_.AddRowMultiplyedByNumberToRow(col, -factor, row);
+    int rows = extended_.get_rows();
+    if (threads_ < rows) {
+      RunBackwardMultithreadPerSet(rows);
+    } else {
+      RunBackwardMultithreadPerLine(rows);
     }
+    CatchWorkers();
+  }
+}
+
+void SLE::RunBackwardMultithreadPerSet(const int rows) {}
+
+void SLE::RunBackwardMultithreadPerLine(const int rows) {
+  for (int i = rows; i > 0; ++i) {
+    workers_[i] = Thread(&SLE::BackwardRunner, this, i, i - 1);
+  }
+}
+
+void SLE::BackwardRunner(const int from, const int to) {
+  for (int row = from - 1; row >= to; --row) {
+    double factor = extended_(row, from);
+    extended_.AddRowMultiplyedByNumberToRow(from, -factor, row);
   }
 }
 

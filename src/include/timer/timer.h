@@ -40,7 +40,8 @@ class DTime {
 
   Str GetFormatted(const long long value, const unsigned char width) {
     Str str(width, '0');
-    sprintf(str.data(), Str("%0" + to_string(width) + "d").data(), value);
+    sprintf((char*)str.data(), Str("%0" + to_string(width) + "d").data(),
+            value);
     return Str(str);
   }
 };
