@@ -23,17 +23,16 @@ class SLE {
   void SolveUsual();
   void SolveParallel();
   const Matrix GetVariables();
+  void SetThreads(const int amount);
 
  private:
   Matrix extended_;
-  // int threads_ = Thread::hardware_concurrency();
-  int threads_ = 20;
+  int threads_ = Thread::hardware_concurrency() / 2;
 
   Workers workers_;
 
   void VerifyCorrectness();
   void SetElementToZero(const int row, const int col);
-  // int GetAnotherRowIdxWithNonZeroElement(const int row, const int col);
 
   void GaussForward();
   void MakeUnitsDiagonally();
@@ -51,9 +50,9 @@ class SLE {
   void RunDiagonallyMultithreadPerLine(const int rows);
   void DiagonallyRunner(const int from, const int to);
 
-  void RunBackwardMultithreadPerSet(const int rows);
-  void RunBackwardMultithreadPerLine(const int rows);
-  void BackwardRunner(const int from, const int to);
+  void RunBackwardMultithreadPerSet(const int col);
+  void RunBackwardMultithreadPerLine(const int col);
+  void BackwardRunner(const int from, const int to, const int col);
 
   void CatchWorkers();
 };

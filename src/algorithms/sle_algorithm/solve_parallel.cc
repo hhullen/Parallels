@@ -5,11 +5,8 @@ namespace s21 {
 
 void SLE::SolveParallel() {
   GaussForwardPrl();
-  // extended_.Save("thread.txt");
   MakeUnitsDiagonallyPrl();
-  // extended_.Save("thread_01.txt");
   GaussBackwardPrl();
-  // extended_.Save("thread_02.txt");
 }
 
 void SLE::GaussForwardPrl() {
@@ -85,28 +82,38 @@ void SLE::DiagonallyRunner(const int from, const int to) {
 
 void SLE::GaussBackwardPrl() {
   for (int col = extended_.get_rows() - 1; col >= 0; --col) {
-    int rows = extended_.get_rows();
-    if (threads_ < rows) {
-      RunBackwardMultithreadPerSet(rows);
+    if (threads_ < col) {
+      RunBackwardMultithreadPerSet(col);
     } else {
-      RunBackwardMultithreadPerLine(rows);
+      RunBackwardMultithreadPerLine(col);
     }
     CatchWorkers();
   }
 }
 
-void SLE::RunBackwardMultithreadPerSet(const int rows) {}
-
-void SLE::RunBackwardMultithreadPerLine(const int rows) {
-  for (int i = rows; i > 0; ++i) {
-    workers_[i] = Thread(&SLE::BackwardRunner, this, i, i - 1);
+void SLE::RunBackwardMultithreadPerSet(const int col) {
+  int rows = col - 1;
+  int shift = rows / threads_;
+  for (int i = rows, trd = 0; i > 0; i -= shift, ++trd) {
+    if (trd == workers_.size() - 1) {
+      shift = i;
+    }
+    workers_[trd] = Thread(&SLE::BackwardRunner, this, i, i - shift, col);
   }
 }
 
-void SLE::BackwardRunner(const int from, const int to) {
-  for (int row = from - 1; row >= to; --row) {
-    double factor = extended_(row, from);
-    extended_.AddRowMultiplyedByNumberToRow(from, -factor, row);
+void SLE::RunBackwardMultithreadPerLine(const int col) {
+  for (int row = col - 1; row >= 0; --row) {
+    double factor = extended_(row, col);
+    workers_[row] = Thread(&Matrix::AddRowMultiplyedByNumberToRow, &extended_,
+                           col, -factor, row);
+  }
+}
+
+void SLE::BackwardRunner(const int from, const int to, const int col) {
+  for (int row = from, trd = 0; row >= to; --row, ++trd) {
+    double factor = extended_(row, col);
+    extended_.AddRowMultiplyedByNumberToRow(col, -factor, row);
   }
 }
 

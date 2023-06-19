@@ -39,7 +39,7 @@ class UtilityCLI {
  private:
   map<std::string, void (UtilityCLI::*)()> algorithms_runners_;
   CMDArgs command_line_;
-  size_t repeats_;
+  size_t repeats_, threads_;
   Str file_path_;
   Timer timer_;
 
@@ -49,8 +49,8 @@ class UtilityCLI {
   void RunSLE();
   void RunWinograd();
 
-  void WriteOutFile();
   double StopAndReportTimer(const Str& message);
+  void ReportRatio(const double usual_time, const double parallel_time);
   void ReadCMDArguments();
 };
 

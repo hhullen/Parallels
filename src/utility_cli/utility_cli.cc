@@ -12,8 +12,11 @@ UtilityCLI::UtilityCLI(int argc, const char *argv[])
   Argument repeats("repeats", Argument::Type::UInt, "");
   Flag repeats_flag("num-repeats", 'n', "", {repeats});
 
+  Argument threads("threads", Argument::Type::UInt, "");
+  Flag threads_flag("num-threads", 't', "", {threads});
+
   command_line_.AddArguments({algorithm});
-  command_line_.AddFlags({input_file_flag, repeats_flag});
+  command_line_.AddFlags({input_file_flag, repeats_flag, threads_flag});
   command_line_.Read(argc, argv);
   InitializeAlgorithms();
 }
@@ -44,6 +47,7 @@ void UtilityCLI::RunACO() {
 void UtilityCLI::RunSLE() {
   ReadCMDArguments();
   SLE runner;
+  runner.SetThreads(threads_);
   runner.Load(file_path_);
 
   timer_.Reset();
@@ -59,8 +63,7 @@ void UtilityCLI::RunSLE() {
     runner.SolveParallel();
   }
   double parallel_time = StopAndReportTimer("SLE parallel Finished");
-  std::cout << "Usual in " << usual_time / parallel_time
-            << " longer than Parallel\n";
+  ReportRatio(usual_time, parallel_time);
 }
 
 void UtilityCLI::RunWinograd() {
@@ -70,16 +73,6 @@ void UtilityCLI::RunWinograd() {
   cout << repeats_ << " repeats\n";
 }
 
-void UtilityCLI::WriteOutFile() {
-  // Str file_path;
-  // try {
-  // file_path = GetOptionParameterIfExists("-o");
-  // } catch (...) {
-  //   return;
-  // }
-  // graph_.ExportGraphToDot(file_path);
-}
-
 double UtilityCLI::StopAndReportTimer(const Str &message) {
   DTime dt = timer_.Elapsed();
   cout << (message + ": " + dt.SHours() + ":" + dt.SMin() + ":" + dt.SSec() +
@@ -87,11 +80,23 @@ double UtilityCLI::StopAndReportTimer(const Str &message) {
   return static_cast<double>(dt.InMs());
 }
 
+void UtilityCLI::ReportRatio(const double usual_time,
+                             const double parallel_time) {
+  std::cout << "Usual in " << usual_time / parallel_time
+            << " longer than Parallel\n";
+}
+
 void UtilityCLI::ReadCMDArguments() {
   FlagValues file = command_line_.GetFlagValues("--file");
   FlagValues repeats = command_line_.GetFlagValues("--num-repeats");
   file_path_ = file.front();
   repeats_ = atol(repeats.front().data());
+  try {
+    FlagValues threads = command_line_.GetFlagValues("--num-threads");
+    threads_ = atol(threads.front().data());
+  } catch (...) {
+    threads_ = 2;
+  }
 }
 
 }  // namespace s21
