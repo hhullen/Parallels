@@ -3,7 +3,6 @@
 namespace s21 {
 
 void SLE::SolveUsual() {
-  extended_ = Matrix(950, 951);
   GaussForward();
   // extended_.Save("thread.txt");
   MakeUnitsDiagonally();

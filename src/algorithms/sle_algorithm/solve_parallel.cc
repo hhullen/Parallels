@@ -1,11 +1,9 @@
+#include "../../include/timer/timer.h"
 #include "sle.h"
 
 namespace s21 {
 
 void SLE::SolveParallel() {
-  // workers_.resize(threads_);
-
-  extended_ = Matrix(950, 951);
   GaussForwardPrl();
   // extended_.Save("thread.txt");
   MakeUnitsDiagonallyPrl();
@@ -18,26 +16,28 @@ void SLE::GaussForwardPrl() {
   int cols = extended_.get_cols() - 1;
   for (int col = 0; col < cols; ++col) {
     int rows = extended_.get_rows() - 1;
-
     if (threads_ < (rows - col)) {
-      int shift = (rows - col) / threads_;
-      for (int i = rows, trd = 0; i > col; i -= shift, ++trd) {
-        if (trd == workers_.size() - 1) {
-          shift = i - col + 1;
-        }
-        workers_[trd] = Thread(&SLE::ForwardRunner, this, i, i - shift, col);
-      }
+      RunForwardMultithreadPerSet(rows, col);
     } else {
-      for (int i = rows, trd = 0; i > col; --i, ++trd) {
-        workers_[trd] = Thread(&SLE::ForwardRunner, this, i, i - 1, col);
-      }
+      RunForwardMultithreadPerLine(rows, col);
     }
+    CatchWorkers();
+  }
+}
 
-    for (int i = 0; i < workers_.size(); ++i) {
-      if (workers_[i].joinable()) {
-        workers_[i].join();
-      }
+void SLE::RunForwardMultithreadPerSet(const int rows, const int col) {
+  int shift = (rows - col) / threads_;
+  for (int i = rows, trd = 0; i > col; i -= shift, ++trd) {
+    if (trd == workers_.size() - 1) {
+      shift = i - col;
     }
+    workers_[trd] = Thread(&SLE::ForwardRunner, this, i, i - shift, col);
+  }
+}
+
+void SLE::RunForwardMultithreadPerLine(const int rows, const int col) {
+  for (int i = rows, trd = 0; i > col; --i, ++trd) {
+    workers_[trd] = Thread(&SLE::ForwardRunner, this, i, i - 1, col);
   }
 }
 
@@ -47,15 +47,37 @@ void SLE::ForwardRunner(const int from, const int to, const int col) {
   }
 }
 
-void SLE::SetElementToZeroThread(const int row, const int col, Mutex* local) {
-  SetElementToZero(row, col);
-  local->unlock();
+void SLE::MakeUnitsDiagonallyPrl() {
+  int rows = extended_.get_rows();
+  if (threads_ < rows) {
+    RunDiagonallyMultithreadPerSet(rows);
+  } else {
+    RunDiagonallyMultithreadPerLine(rows);
+  }
+  CatchWorkers();
 }
 
-void SLE::MakeUnitsDiagonallyPrl() {
-  for (int i = 0; i < extended_.get_rows(); ++i) {
+void SLE::RunDiagonallyMultithreadPerSet(const int rows) {
+  int shift = rows / threads_;
+  for (int i = 0, trd = 0; i < rows - 1; i += shift, ++trd) {
+    if (trd == workers_.size() - 1) {
+      shift = rows - i - 1;
+    }
+    workers_[trd] = Thread(&SLE::DiagonallyRunner, this, i, i + shift + 1);
+  }
+}
+
+void SLE::RunDiagonallyMultithreadPerLine(const int rows) {
+  for (int i = 0; i < rows; ++i) {
+    workers_[i] = Thread(&SLE::DiagonallyRunner, this, i, i + 1);
+  }
+}
+
+void SLE::DiagonallyRunner(const int from, const int to) {
+  int cols = extended_.get_cols();
+  for (int i = from; i < to; ++i) {
     double factor = extended_(i, i);
-    for (int j = 0; j < extended_.get_cols(); ++j) {
+    for (int j = 0; j < cols; ++j) {
       extended_(i, j) /= factor;
     }
   }
@@ -66,6 +88,14 @@ void SLE::GaussBackwardPrl() {
     for (int row = col - 1; row >= 0; --row) {
       double factor = extended_(row, col);
       extended_.AddRowMultiplyedByNumberToRow(col, -factor, row);
+    }
+  }
+}
+
+void SLE::CatchWorkers() {
+  for (int i = 0; i < workers_.size(); ++i) {
+    if (workers_[i].joinable()) {
+      workers_[i].join();
     }
   }
 }

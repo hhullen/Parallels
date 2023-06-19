@@ -9,6 +9,7 @@ SLE::SLE() {
   if (threads_ < 1) {
     threads_ = 1;
   }
+  workers_.resize(threads_);
 }
 
 SLE::~SLE() {}
