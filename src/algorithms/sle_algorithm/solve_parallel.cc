@@ -24,7 +24,8 @@ void SLE::GaussForwardPrl() {
 
 void SLE::RunForwardMultithreadPerSet(const int rows, const int col) {
   int shift = (rows - col) / threads_;
-  for (int i = rows, trd = 0; i > col; i -= shift, ++trd) {
+  size_t trd = 0;
+  for (int i = rows; i > col; i -= shift, ++trd) {
     if (trd == workers_.size() - 1) {
       shift = i - col;
     }
@@ -56,7 +57,8 @@ void SLE::MakeUnitsDiagonallyPrl() {
 
 void SLE::RunDiagonallyMultithreadPerSet(const int rows) {
   int shift = rows / threads_;
-  for (int i = 0, trd = 0; i < rows - 1; i += shift, ++trd) {
+  size_t trd = 0;
+  for (int i = 0; i < rows - 1; i += shift, ++trd) {
     if (trd == workers_.size() - 1) {
       shift = rows - i - 1;
     }
@@ -94,7 +96,8 @@ void SLE::GaussBackwardPrl() {
 void SLE::RunBackwardMultithreadPerSet(const int col) {
   int rows = col - 1;
   int shift = rows / threads_;
-  for (int i = rows, trd = 0; i > 0; i -= shift, ++trd) {
+  size_t trd = 0;
+  for (int i = rows; i > 0; i -= shift, ++trd) {
     if (trd == workers_.size() - 1) {
       shift = i;
     }
@@ -118,7 +121,7 @@ void SLE::BackwardRunner(const int from, const int to, const int col) {
 }
 
 void SLE::CatchWorkers() {
-  for (int i = 0; i < workers_.size(); ++i) {
+  for (size_t i = 0; i < workers_.size(); ++i) {
     if (workers_[i].joinable()) {
       workers_[i].join();
     }

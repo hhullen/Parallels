@@ -59,12 +59,12 @@ endif
 all: clean tests prl_cli check
 
 libmatrix.a:
-	$(COMPILER)  -c $(INCLUDE_DIR)$(SEP)matrix$(SEP)*.cc
+	$(COMPILER) -O3 -c $(INCLUDE_DIR)$(SEP)matrix$(SEP)*.cc
 	ar rc libmatrix.a matrix.o
 	ranlib libmatrix.a
 
 libalgorithms.a:
-	$(COMPILER)  -c $(ALGORITHMS_BUILD_FILES) -I include
+	$(COMPILER) -O3 -c $(CODE_DIAG_FLAGS) $(ALGORITHMS_BUILD_FILES) -I include
 	ar rc libalgorithms.a sle.o winograd.o aco.o
 	ranlib libalgorithms.a
 
@@ -75,30 +75,28 @@ check:
 	clang-format -n --style=Google $(CHECK_FILES)
 
 tests: libmatrix.a libalgorithms.a
-	# $(COMPILER) $(STD) $(TESTBUILD_FILES) $(CLI_BULD_FILES) $(TEST_FLAGS) \
-	# -I $(INCLUDE_DIR) -I $(ALGORITHMS_DIR) $(LIBS_TO_COMPILE) -o $(TEST_EXECUTABLE)
-	# .$(SEP)$(TEST_EXECUTABLE)
+	$(COMPILER) $(STD) $(CODE_DIAG_FLAGS) $(TESTBUILD_FILES) $(TEST_FLAGS) \
+	-I $(INCLUDE_DIR) -I $(ALGORITHMS_DIR) -L . -lmatrix -lalgorithms -o $(TEST_EXECUTABLE)
+	.$(SEP)$(TEST_EXECUTABLE)
 
 gcov_report: gcov_build
 	lcov -t "test" -o test.info -c -d .
 	genhtml -o report test.info
 
 gcov_build: libmatrix.a libalgorithms.a
-	# $(COMPILER) $(STD) $(TESTBUILD_FILES) $(CLI_BULD_FILES) $(GRAPH_BUILD_FILES) \
-	# $(ALGORITHMS_BUILD_FILES) -I $(INCLUDE_DIR) -L. -l$(DOT_LIB) $(TEST_FLAGS) \
-	# -o $(TEST_EXECUTABLE) --coverage
-	# .$(SEP)$(TEST_EXECUTABLE)
+	$(COMPILER) $(STD) $(TESTBUILD_FILES) $(CLI_BULD_FILES) $(TEST_FLAGS) \
+	-I $(INCLUDE_DIR) -I $(ALGORITHMS_DIR) -L . -lmatrix -lalgorithms -o $(TEST_EXECUTABLE) --coverage
+	.$(SEP)$(TEST_EXECUTABLE)
 
 clean:
 	$(DELETE_FOLDER) $(TO_DELETE_FOLDERS)
 	$(DELETE_FILE) $(TO_DELETE_FILES)
 
 cli: clean libmatrix.a libalgorithms.a
-	# !!! $(CODE_DIAG_FLAGS)
-	g++  $(STD) main.cc -I $(INCLUDE_DIR) -I $(ALGORITHMS_DIR) \
-	-L ./ -lmatrix -lalgorithms -o $(CLI_EXECUTABLE)
+	g++ $(STD) $(CODE_DIAG_FLAGS) main.cc -I $(INCLUDE_DIR) -I $(ALGORITHMS_DIR) \
+	-L . -lmatrix -lalgorithms -o $(CLI_EXECUTABLE)
 
-	./$(CLI_EXECUTABLE) SLE -f tests/dataset/matrix_correct_4.txt -n 10000 -t 5
-	./$(CLI_EXECUTABLE) SLE -f tests/dataset/matrix_random_500.txt -n 1 -t 5
+	.$(SEP)$(CLI_EXECUTABLE) SLE -f tests$(SEP)dataset$(SEP)matrix_correct_4.txt -n 10000 -t 5
+	.$(SEP)$(CLI_EXECUTABLE) SLE -f tests$(SEP)dataset$(SEP)matrix_random_500.txt -n 1 -t 5
 
 	

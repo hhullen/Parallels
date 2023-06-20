@@ -3,7 +3,7 @@
 namespace s21 {
 
 UtilityCLI::UtilityCLI(int argc, const char *argv[])
-    : file_path_(""), repeats_(0), threads_(2) {
+    : repeats_(0), threads_(2) {
   Argument algorithm("algorithm", Argument::Type::Str);
 
   Argument file_path("path", Argument::Type::Path);
