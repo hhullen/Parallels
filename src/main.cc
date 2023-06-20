@@ -18,7 +18,7 @@ int main(int argc, const char* argv[]) {
   } catch (const string& ex) {
     cerr << "Algorithm execution error: " << ex << "\n";
   } catch (const exception& ex) {
-    cerr << "Execution occurred: " << ex.what() << "\n";
+    cerr << "Exception occurred: " << ex.what() << "\n";
   }
   return exit_code;
 }

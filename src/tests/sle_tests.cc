@@ -38,10 +38,16 @@ TEST(SLE_tests, solve_parallel) {
 TEST(SLE_tests, get_variables) {
   s21::SLE object;
 
-  object.Load("tests/dataset/matrix_correct_8.txt");
+  object.Load("tests/dataset/matrix_correct_4.txt");
   object.SolveParallel();
-
-  EXPECT_NO_THROW(Matrix vars = object.GetVariables());
+  Matrix vars;
+  EXPECT_NO_THROW(vars = object.GetVariables());
+  object.Load("tests/dataset/matrix_correct_8.txt");
+  EXPECT_NO_THROW(object.SolveUsual());
+  EXPECT_NO_THROW(vars = object.GetVariables());
+  object.Load("tests/dataset/matrix_random_200.txt");
+  EXPECT_NO_THROW(object.SolveUsual());
+  EXPECT_NO_THROW(vars = object.GetVariables());
 }
 
 TEST(SLE_tests, set_threads) {
