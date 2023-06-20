@@ -12,8 +12,9 @@ class Flag {
 
  public:
   Flag() = delete;
-  Flag(const Str& long_name, const char short_name, const Str& help,
-       const std::initializer_list<Argument>& args);
+  Flag(const Str& long_name = "default-init", const char short_name = '\0',
+       const Str& help = "flag",
+       const std::initializer_list<Argument>& args = {});
 
   Str GetLongName();
   char GetShortName();
@@ -25,9 +26,9 @@ class Flag {
 
  private:
   std::list<Argument> arguments_;
-  const Str long_name_ = "default-init";
-  const char short_name_ = '\0';
-  const Str help_ = "no help";
+  const Str long_name_;
+  const char short_name_;
+  const Str help_;
 };
 
 Flag::Flag(const Str& long_name, const char short_name, const Str& help,

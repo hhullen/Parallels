@@ -16,7 +16,8 @@ class Argument {
   enum class Type { Int, UInt, Float, Str, Path };
 
   Argument() = delete;
-  Argument(const Str &name, Argument::Type type, const Str &help);
+  Argument(const Str &name = "default-init", Argument::Type type = Type::Str,
+           const Str &help = "argument");
   ~Argument();
 
   void ReadArgument(const Str &arg);
@@ -29,8 +30,8 @@ class Argument {
 
  private:
   std::map<Type, RegEx> regex_;
-  const Str name_ = "default-init", help_ = "default-init";
-  Argument::Type type_ = Type::Str;
+  const Str name_, help_;
+  Argument::Type type_;
   Str value_;
 
   void ValidateArg(const Str &arg, Type type);

@@ -4,16 +4,16 @@ namespace s21 {
 
 UtilityCLI::UtilityCLI(int argc, const char *argv[])
     : file_path_(""), repeats_(0), threads_(2) {
-  Argument algorithm("algorithm", Argument::Type::Str, "");
+  Argument algorithm("algorithm", Argument::Type::Str);
 
-  Argument file_path("path", Argument::Type::Path, "");
-  Flag input_file_flag("file", 'f', "", {file_path});
+  Argument file_path("path", Argument::Type::Path);
+  Flag input_file_flag("file", 'f', "path to file", {file_path});
 
-  Argument repeats("repeats", Argument::Type::UInt, "");
-  Flag repeats_flag("num-repeats", 'n', "", {repeats});
+  Argument repeats("repeats", Argument::Type::UInt);
+  Flag repeats_flag("num-repeats", 'n', "repeats number", {repeats});
 
-  Argument threads("threads", Argument::Type::UInt, "");
-  Flag threads_flag("num-threads", 't', "", {threads});
+  Argument threads("threads", Argument::Type::UInt);
+  Flag threads_flag("num-threads", 't', "threads number", {threads});
 
   command_line_.AddArguments({algorithm});
   command_line_.AddFlags({input_file_flag, repeats_flag, threads_flag});
