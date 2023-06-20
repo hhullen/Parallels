@@ -20,10 +20,11 @@ CHECK_FILES=$(ALGORITHMS_BUILD_FILES:.cc=.h) \
 			$(ALGORITHMS_BUILD_FILES) \
 			$(CLI_DIR)$(SEP)* \
 			main.cc
-CPPCH_SETUP=--enable=all --suppress=missingInclude --suppress=unusedFunction --suppress=noExplicitConstructor -v --language=c++ $(STD)
+CPPCH_SETUP=--enable=all --suppress=missingInclude --suppress=unusedFunction \
+			--suppress=noExplicitConstructor -v --language=c++ $(STD)
 BUILD_DIR=..$(SEP)build
-TO_DELETE_FILES=*.o *.out *.dSYM *.gch *.gcda *.gcno .DS_Store $(TEST_EXECUTABLE) $(CLI_EXECUTABLE) $(CLANG_FILE) \
-				*.info libmatrix.a libalgorithms.a
+TO_DELETE_FILES=*.o *.out *.dSYM *.gch *.gcda *.gcno .DS_Store $(TEST_EXECUTABLE) \
+				$(CLI_EXECUTABLE) $(CLANG_FILE) *.info libmatrix.a libalgorithms.a
 TO_DELETE_FOLDERS=$(BUILD_DIR) report *.dSYM
 
 #Crossplatform specs
@@ -53,7 +54,7 @@ ifeq ($(OS), Darwin)
 	COPY=cp
 endif
 
-.PHONY: all check tests clean
+.PHONY: all check tests clean gcov_report gcov_build cli
 
 all: clean tests prl_cli check
 
