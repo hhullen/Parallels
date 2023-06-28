@@ -13,10 +13,10 @@ class Argument {
   using RegEx = std::regex;
 
  public:
-  enum class Type { Int, UInt, Float, Str, Path };
+  enum class Type { Int, UInt, Float, String, Path };
 
   Argument() = delete;
-  Argument(const Str &name = "default-init", Argument::Type type = Type::Str,
+  Argument(const Str &name = "default-init", Argument::Type type = Type::String,
            const Str &help = "argument");
   ~Argument();
 
@@ -65,7 +65,7 @@ void Argument::InitializeRegex() {
   regex_[Type::Int] = RegEx("^[-]{0,1}[0-9]+$");
   regex_[Type::UInt] = RegEx("^[0-9]+$");
   regex_[Type::Float] = RegEx("^[-]{0,1}[0-9]+\\.[0-9]+$");
-  regex_[Type::Str] = RegEx("^[a-zA-Z]+[0-9a-zA-z_-]*[a-zA-Z]*$");
+  regex_[Type::String] = RegEx("^[a-zA-Z]+[0-9a-zA-z_-]*[a-zA-Z]*$");
   regex_[Type::Path] =
       RegEx("^[\\w\\/\\.]+[\\.\\\\/\\d\\w\\s\\+\\=\\#\\!\\@\\$\\(\\)\\:_-]*$");
 }

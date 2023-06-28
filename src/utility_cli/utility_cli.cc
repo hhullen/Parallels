@@ -4,7 +4,7 @@ namespace s21 {
 
 UtilityCLI::UtilityCLI(int argc, const char *argv[])
     : repeats_(0), threads_(2) {
-  Argument algorithm("algorithm", Argument::Type::Str);
+  Argument algorithm("algorithm", Argument::Type::String);
 
   Argument file_path("path", Argument::Type::Path);
   Flag input_file_flag("file", 'f', "path to file", {file_path});
@@ -36,12 +36,24 @@ void UtilityCLI::Exec() {
 }
 
 void UtilityCLI::RunACO() {
-  cout << "ACO RUN\n";
-  timer_.Reset();
   ReadCMDArguments();
-  cout << file_path_ << " input file\n";
-  cout << repeats_ << " repeats\n";
-  StopAndReportTimer("ACO Finished");
+  TSPAlgorithm runner;
+  Graph graph;
+
+  timer_.Reset();
+  for (int i = 0; i < repeats_; ++i) {
+    graph.LoadGraphFromFile(file_path_);
+    runner.Solve(graph);
+  }
+  double usual_time = StopAndReportTimer("ACO usual Finished");
+
+  timer_.Reset();
+  for (int i = 0; i < repeats_; ++i) {
+    graph.LoadGraphFromFile(file_path_);
+    runner.Solve(graph);
+  }
+  double parallel_time = StopAndReportTimer("ACO parallel Finished");
+  ReportRatio(usual_time, parallel_time);
 }
 
 void UtilityCLI::RunSLE() {
@@ -51,14 +63,14 @@ void UtilityCLI::RunSLE() {
   runner.Load(file_path_);
 
   timer_.Reset();
-  for (size_t i = 0; i < repeats_; ++i) {
+  for (int i = 0; i < repeats_; ++i) {
     runner.Load(file_path_);
     runner.SolveUsual();
   }
   double usual_time = StopAndReportTimer("SLE usual Finished");
 
   timer_.Reset();
-  for (size_t i = 0; i < repeats_; ++i) {
+  for (int i = 0; i < repeats_; ++i) {
     runner.Load(file_path_);
     runner.SolveParallel();
   }
@@ -90,10 +102,10 @@ void UtilityCLI::ReadCMDArguments() {
   FlagValues file = command_line_.GetFlagValues("--file");
   FlagValues repeats = command_line_.GetFlagValues("--num-repeats");
   file_path_ = file.front();
-  repeats_ = atol(repeats.front().data());
+  repeats_ = static_cast<int>(atol(repeats.front().data()));
   try {
     FlagValues threads = command_line_.GetFlagValues("--num-threads");
-    threads_ = atol(threads.front().data());
+    threads_ = static_cast<int>(atol(threads.front().data()));
   } catch (...) {
     threads_ = 2;
   }

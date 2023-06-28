@@ -19,14 +19,18 @@ class DTime {
   DTime(const long long duration) : elapsed_milliseconds_(duration) {}
   long long InMs() { return elapsed_milliseconds_; }
   long long InSec() { return elapsed_milliseconds_ / 1'000; }
-  int InMin() { return elapsed_milliseconds_ / 60'000; }
-  int InHours() { return elapsed_milliseconds_ / 3'600'000; }
-  int InDays() { return elapsed_milliseconds_ / 86'400'000; }
+  int InMin() { return static_cast<int>(elapsed_milliseconds_ / 60'000); }
+  int InHours() { return static_cast<int>(elapsed_milliseconds_ / 3'600'000); }
+  int InDays() { return static_cast<int>(elapsed_milliseconds_ / 86'400'000); }
 
   long long Ms() { return elapsed_milliseconds_ % 1000; }
-  long int Sec() { return elapsed_milliseconds_ % 60'000 / 1000; }
-  int Min() { return elapsed_milliseconds_ % 3'600'000 / 60'000; }
-  int Hours() { return elapsed_milliseconds_ % 86'400'000 / 3'600'000; }
+  long long Sec() { return elapsed_milliseconds_ % 60'000 / 1000; }
+  int Min() {
+    return static_cast<int>(elapsed_milliseconds_ % 3'600'000 / 60'000);
+  }
+  int Hours() {
+    return static_cast<int>(elapsed_milliseconds_ % 86'400'000 / 3'600'000);
+  }
   int Days() { return InDays(); }
 
   Str SMs(const unsigned char width = 3) { return GetFormatted(Ms(), width); }

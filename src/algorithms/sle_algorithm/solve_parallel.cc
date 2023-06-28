@@ -34,7 +34,8 @@ void SLE::RunForwardMultithreadPerSet(const int rows, const int col) {
 }
 
 void SLE::RunForwardMultithreadPerLine(const int rows, const int col) {
-  for (int i = rows, trd = 0; i > col; --i, ++trd) {
+  size_t trd = 0;
+  for (int i = rows; i > col; --i, ++trd) {
     workers_[trd] = Thread(&SLE::ForwardRunner, this, i, i - 1, col);
   }
 }
@@ -68,7 +69,8 @@ void SLE::RunDiagonallyMultithreadPerSet(const int rows) {
 
 void SLE::RunDiagonallyMultithreadPerLine(const int rows) {
   for (int i = 0; i < rows; ++i) {
-    workers_[i] = Thread(&SLE::DiagonallyRunner, this, i, i + 1);
+    workers_[static_cast<size_t>(i)] =
+        Thread(&SLE::DiagonallyRunner, this, i, i + 1);
   }
 }
 
@@ -108,8 +110,8 @@ void SLE::RunBackwardMultithreadPerSet(const int col) {
 void SLE::RunBackwardMultithreadPerLine(const int col) {
   for (int row = col - 1; row >= 0; --row) {
     double factor = extended_(row, col);
-    workers_[row] = Thread(&Matrix::AddRowMultiplyedByNumberToRow, &extended_,
-                           col, -factor, row);
+    workers_[static_cast<size_t>(row)] = Thread(
+        &Matrix::AddRowMultiplyedByNumberToRow, &extended_, col, -factor, row);
   }
 }
 

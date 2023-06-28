@@ -1,6 +1,7 @@
 #ifndef SRC_UTILITY_CLI_UTILITY_CLI_H_
 #define SRC_UTILITY_CLI_UTILITY_CLI_H_
 
+#include <aco_algorithm/aco.h>
 #include <cmd_args/cmd_args.h>
 #include <sle_algorithm/sle.h>
 #include <timer/timer.h>
@@ -39,7 +40,7 @@ class UtilityCLI {
  private:
   map<std::string, void (UtilityCLI::*)()> algorithms_runners_;
   CMDArgs command_line_;
-  size_t repeats_, threads_;
+  int repeats_, threads_;
   Str file_path_;
   Timer timer_;
 

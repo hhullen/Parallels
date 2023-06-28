@@ -12,7 +12,8 @@ TEST_EXECUTABLE=$(MAIN_PROJ_NAME)_test.out
 CLI_EXECUTABLE=prl
 COMPILER=g++
 STD=--std=c++17
-CODE_DIAG_FLAGS=-Wall -Wextra -Werror -Wpedantic
+CODE_DIAG_FLAGS=-Wall -Wextra -Werror -Wpedantic -Wshadow -Wconversion \
+				-Wnull-dereference -Wsign-conversion
 TEST_FLAGS=-lgtest -pthread -lgtest_main
 CLANG_FILE=.clang-format
 CLANG_FILE_WAY=..$(SEP)materials$(SEP)linters$(SEP)$(CLANG_FILE)
@@ -23,7 +24,7 @@ CHECK_FILES=$(ALGORITHMS_BUILD_FILES:.cc=.h) \
 CPPCH_SETUP=--enable=all --suppress=missingInclude --suppress=unusedFunction \
 			--suppress=noExplicitConstructor -v --language=c++ $(STD)
 BUILD_DIR=..$(SEP)build
-TO_DELETE_FILES=*.o *.out *.dSYM *.gch *.gcda *.gcno .DS_Store $(TEST_EXECUTABLE) \
+TO_DELETE_FILES=*.o *.a *.out *.dSYM *.gch *.gcda *.gcno .DS_Store $(TEST_EXECUTABLE) \
 				$(CLI_EXECUTABLE) $(CLANG_FILE) *.info libmatrix.a libalgorithms.a
 TO_DELETE_FOLDERS=$(BUILD_DIR) report *.dSYM
 
@@ -64,9 +65,21 @@ libmatrix.a:
 	ranlib libmatrix.a
 
 libalgorithms.a:
-	$(COMPILER) -O3 -c $(CODE_DIAG_FLAGS) $(ALGORITHMS_BUILD_FILES) -I include
+	$(COMPILER) $(STD) $(CODE_DIAG_FLAGS) -O3 -c $(ALGORITHMS_BUILD_FILES) -I include
 	ar rc libalgorithms.a sle.o winograd.o aco.o
 	ranlib libalgorithms.a
+
+libs21_graph.a:
+	$(COMPILER) $(STD) $(CODE_DIAG_FLAGS) -O3 -c $(INCLUDE_DIR)$(SEP)graph$(SEP)graph.cc -I $(INCLUDE_DIR)
+	ar cr libs21_graph.a *.o
+	ranlib libs21_graph.a
+	$(DELETE_FILE) *.o
+
+libdotlib.a:
+	$(COMPILER) $(STD) $(CODE_DIAG_FLAGS) -O3 -c $(INCLUDE_DIR)$(SEP)dot_writer$(SEP)*.cpp
+	ar cr libdotlib.a *.o
+	ranlib libdotlib.a
+	$(DELETE_FILE) *.o
 
 check:
 	cppcheck $(CPPCH_SETUP) $(CHECK_FILES)
@@ -92,9 +105,9 @@ clean:
 	$(DELETE_FOLDER) $(TO_DELETE_FOLDERS)
 	$(DELETE_FILE) $(TO_DELETE_FILES)
 
-cli: clean libmatrix.a libalgorithms.a
+cli: clean libmatrix.a libalgorithms.a libs21_graph.a libdotlib.a
 	g++ $(STD) $(CODE_DIAG_FLAGS) main.cc -I $(INCLUDE_DIR) -I $(ALGORITHMS_DIR) \
-	-L . -lmatrix -lalgorithms -o $(CLI_EXECUTABLE)
+	-L . -lmatrix -lalgorithms -ls21_graph -ldotlib -o $(CLI_EXECUTABLE)
 
 	.$(SEP)$(CLI_EXECUTABLE) SLE -f tests$(SEP)dataset$(SEP)matrix_correct_4.txt -n 10000 -t 5
 	.$(SEP)$(CLI_EXECUTABLE) SLE -f tests$(SEP)dataset$(SEP)matrix_random_500.txt -n 1 -t 5

@@ -27,7 +27,7 @@ class SLE {
 
  private:
   Matrix extended_;
-  int threads_ = Thread::hardware_concurrency() / 2;
+  int threads_ = static_cast<int>(Thread::hardware_concurrency() / 2);
 
   Workers workers_;
 
