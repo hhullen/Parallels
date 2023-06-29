@@ -18,6 +18,8 @@ Graph::~Graph() { matrix_.Clear(); }
 
 int &Graph::operator()(int i, int j) { return matrix_(i, j); }
 
+int Graph::operator()(int i, int j) const { return matrix_(i, j); }
+
 void Graph::Resize(int size) {
   if (size < 1) {
     throw invalid_argument("Incorrect adjacency matrix size.");

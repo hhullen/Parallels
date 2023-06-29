@@ -50,6 +50,10 @@ class AdjacencyMatrix {
     return matrix_[static_cast<size_t>(i)][static_cast<size_t>(j)];
   }
 
+  int operator()(int i, int j) const {
+    return matrix_[static_cast<size_t>(i)][static_cast<size_t>(j)];
+  }
+
  private:
   vector<vector<int>> matrix_;
 };
@@ -62,6 +66,8 @@ class Graph {
   ~Graph();
 
   int &operator()(int i, int j);
+
+  int operator()(int i, int j) const;
 
   void Resize(int size);
   size_t get_size();

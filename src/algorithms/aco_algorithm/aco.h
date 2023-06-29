@@ -33,7 +33,7 @@ class TSPAlgorithm {
   Graph pheromones_;
   TsmResult result_;
 
-  void CloseRoute(Graph &graph);
+  void CloseRoute(const Graph &graph);
   void RunThroughGraphFromVertex(Graph &graph, int i);
   double GetProbabilitiesDenominator(Graph &graph, int start);
   bool IsNotAllAttended(Graph &graph);

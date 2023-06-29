@@ -15,7 +15,7 @@ TsmResult TSPAlgorithm::Solve(Graph &graph) {
   return result_;
 }
 
-void TSPAlgorithm::CloseRoute(Graph &graph) {
+void TSPAlgorithm::CloseRoute(const Graph &graph) {
   int first = result_.vertices.front();
   int last = result_.vertices.back();
   result_.distance += graph(first - 1, last - 1);

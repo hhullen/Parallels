@@ -106,10 +106,11 @@ clean:
 	$(DELETE_FILE) $(TO_DELETE_FILES)
 
 cli: clean libmatrix.a libalgorithms.a libs21_graph.a libdotlib.a
-	g++ $(STD) $(CODE_DIAG_FLAGS) main.cc -I $(INCLUDE_DIR) -I $(ALGORITHMS_DIR) \
+	g++ $(STD) $(CODE_DIAG_FLAGS) -O3 main.cc -I $(INCLUDE_DIR) -I $(ALGORITHMS_DIR) \
 	-L . -lmatrix -lalgorithms -ls21_graph -ldotlib -o $(CLI_EXECUTABLE)
+	make test_cli
 
+test_cli:
 	.$(SEP)$(CLI_EXECUTABLE) SLE -f tests$(SEP)dataset$(SEP)matrix_correct_4.txt -n 10000 -t 5
 	.$(SEP)$(CLI_EXECUTABLE) SLE -f tests$(SEP)dataset$(SEP)matrix_random_500.txt -n 1 -t 5
-
-	
+	.$(SEP)$(CLI_EXECUTABLE) ACO -f tests/dataset/graph_example.txt -n 5000
