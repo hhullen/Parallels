@@ -9,7 +9,7 @@ SLE::SLE() {
   if (threads_ < 1) {
     threads_ = 1;
   }
-  workers_.resize(static_cast<size_t>(threads_));
+  task_manager_.SetThreads(static_cast<size_t>(threads_));
 }
 
 SLE::~SLE() {}
@@ -19,7 +19,7 @@ void SLE::SetThreads(const int amount) {
     throw invalid_argument("Incorrect threads amount");
   }
   threads_ = amount;
-  workers_.resize(static_cast<size_t>(threads_));
+  task_manager_.SetThreads(static_cast<size_t>(threads_));
 }
 
 void SLE::Load(const Str &file_path) {

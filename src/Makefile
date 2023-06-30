@@ -105,10 +105,17 @@ clean:
 	$(DELETE_FOLDER) $(TO_DELETE_FOLDERS)
 	$(DELETE_FILE) $(TO_DELETE_FILES)
 
-cli: clean libmatrix.a libalgorithms.a libs21_graph.a libdotlib.a
+leaks: cli
+	leaks -atExit -- .$(SEP)$(CLI_EXECUTABLE) SLE -f tests$(SEP)dataset$(SEP)matrix_correct_8.txt -n 1 -t 5
+
+cli: libmatrix.a libalgorithms.a libs21_graph.a libdotlib.a
+	rm libalgorithms.a
+	make libalgorithms.a
 	g++ $(STD) $(CODE_DIAG_FLAGS) -O3 main.cc -I $(INCLUDE_DIR) -I $(ALGORITHMS_DIR) \
 	-L . -lmatrix -lalgorithms -ls21_graph -ldotlib -o $(CLI_EXECUTABLE)
-	make test_cli
+	# make test_cli
+
+	.$(SEP)$(CLI_EXECUTABLE) SLE -f tests$(SEP)dataset$(SEP)matrix_correct_8.txt -n 1 -t 5
 
 test_cli:
 	.$(SEP)$(CLI_EXECUTABLE) SLE -f tests$(SEP)dataset$(SEP)matrix_correct_4.txt -n 10000 -t 5
