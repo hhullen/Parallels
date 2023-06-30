@@ -1,13 +1,18 @@
 #include "winograd.h"
+
 #include <iostream>
+#include <thread>
 
-winograd::winograd(matrix multiplicand, matrix factor) {}
+s21::winograd::winograd(string pathMultiplicand, string pathFactor) {
+  multiplicand.Load(pathMultiplicand);
+  factor.Load(pathFactor);
+}
 
-winograd::~winograd() {}
+s21::winograd::~winograd() {}
 
-std::vector<std::vector<double>>
-multiplyMatrices(const std::vector<std::vector<double>> &multiplicand,
-                 const std::vector<std::vector<double>> &factor) {
+std::vector<std::vector<double>> s21::winograd::multiplyMatrices(
+    const std::vector<std::vector<double>> &multiplicand,
+    const std::vector<std::vector<double>> &factor) {
   int rows1 = multiplicand.size();
   int cols1 = multiplicand[0].size();
   int rows2 = factor.size();
@@ -62,16 +67,16 @@ multiplyMatrices(const std::vector<std::vector<double>> &multiplicand,
 }
 
 int main() {
-  std::vector<std::vector<double>> multiplicand = {{1, 2, 3}, {4, 5, 6}};
-  std::vector<std::vector<double>> factor = {{7, 8}, {9, 10}, {11, 12}};
-  std::vector<std::vector<double>> result =
-      multiplyMatrices(multiplicand, factor);
-  for (const auto &row : result) {
-    for (int element : row) {
-      std::cout << element << " ";
-    }
-    std::cout << std::endl;
-  }
+  // std::vector<std::vector<double>> multiplicand = {{1, 2, 3}, {4, 5, 6}};
+  // std::vector<std::vector<double>> factor = {{7, 8}, {9, 10}, {11, 12}};
+  // std::vector<std::vector<double>> result =
+  //     multiplyMatrices(multiplicand, factor);
+  // for (const auto &row : result) {
+  //   for (int element : row) {
+  //     std::cout << element << " ";
+  //   }
+  //   std::cout << std::endl;
+  // }
 
   return 0;
 }

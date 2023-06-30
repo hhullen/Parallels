@@ -32,7 +32,7 @@ Matrix::Matrix(int rows, int cols) {
  *
  * @param other const Matrix& type
  */
-Matrix::Matrix(const Matrix& other) : rows_(other.rows_), cols_(other.cols_) {
+Matrix::Matrix(const Matrix &other) : rows_(other.rows_), cols_(other.cols_) {
   init_matrix(kNoFill);
   copy_data_other_to_this_matrix(other.matrix_);
 }
@@ -42,7 +42,7 @@ Matrix::Matrix(const Matrix& other) : rows_(other.rows_), cols_(other.cols_) {
  *
  * @param other Matrix&& type
  */
-Matrix::Matrix(Matrix&& other) {
+Matrix::Matrix(Matrix &&other) {
   rows_ = other.rows_;
   cols_ = other.cols_;
   matrix_ = other.matrix_;
@@ -76,7 +76,7 @@ Matrix::~Matrix() {
  *
  * @param file_path const string& type
  */
-void Matrix::Load(const string& file_path) {
+void Matrix::Load(const string &file_path) {
   ifstream file(file_path);
 
   IsInputFileOpened(file);
@@ -86,7 +86,7 @@ void Matrix::Load(const string& file_path) {
   file.close();
 }
 
-void Matrix::Save(const string& file_path) {
+void Matrix::Save(const string &file_path) {
   ofstream file(file_path);
 
   IsOutputFileOpened(file);
@@ -107,7 +107,7 @@ void Matrix::ExchangeRows(const int row_1, const int row_2) {
     throw out_of_range("The matrix rows indices that is out of matrix size");
   }
 
-  double* buffer_row = matrix_[row_1];
+  double *buffer_row = matrix_[row_1];
   matrix_[row_1] = matrix_[row_2];
   matrix_[row_2] = buffer_row;
   buffer_row = nullptr;
@@ -120,7 +120,7 @@ void Matrix::ExchangeRows(const int row_1, const int row_2) {
  * @return true
  * @return false
  */
-bool Matrix::IsEqual(const Matrix& other) const {
+bool Matrix::IsEqual(const Matrix &other) const {
   bool is_equal = true;
 
   if (rows_ == other.rows_ && cols_ == other.cols_) {
@@ -141,7 +141,7 @@ bool Matrix::IsEqual(const Matrix& other) const {
  *
  * @param other const Matrix& type
  */
-void Matrix::Summarize(const Matrix& other) {
+void Matrix::Summarize(const Matrix &other) {
   if (rows_ != other.rows_ || cols_ != other.cols_) {
     throw invalid_argument("Summation the matrix that is not square");
   }
@@ -175,7 +175,7 @@ void Matrix::SummarizeRows(const int base_row, const int summ_row) {
  *
  * @param other const Matrix& type
  */
-void Matrix::Substract(const Matrix& other) {
+void Matrix::Substract(const Matrix &other) {
   if (rows_ != other.rows_ || cols_ != other.cols_) {
     throw invalid_argument("Substraction the matrix that is not square");
   }
@@ -206,12 +206,12 @@ void Matrix::MultiplyNumber(const double num) {
  *
  * @param other const Matrix& type
  */
-void Matrix::Multiply(const Matrix& other) {
+void Matrix::Multiply(const Matrix &other) {
   if (cols_ != other.rows_) {
     throw invalid_argument(
         "Multiplication matrix with different cols and rows");
   }
-  double* buffer_row = nullptr;
+  double *buffer_row = nullptr;
 
   for (int i = 0; i < rows_; ++i) {
     buffer_row = new double[other.cols_];
@@ -247,7 +247,7 @@ void Matrix::MuliplyRowNumber(const int row, const double num) {
  *
  * @param other const Matrix& type
  */
-void Matrix::HadamardProduct(const Matrix& other) {
+void Matrix::HadamardProduct(const Matrix &other) {
   if (cols_ != other.cols_ || rows_ != other.rows_) {
     throw invalid_argument("Hadamatd product with different cols or rows");
   }
@@ -401,7 +401,7 @@ void Matrix::set_rows(int new_val) {
   if (new_val <= 0) {
     throw invalid_argument("Setting rows amount that is equal or less than 0");
   }
-  double** buffer = new double*[new_val];
+  double **buffer = new double *[new_val];
 
   if (new_val < rows_) {
     rows_ = new_val;
@@ -429,7 +429,7 @@ void Matrix::set_cols(int new_val) {
   if (new_val <= 0) {
     throw invalid_argument("Setting cols amount that is equal or less than 0");
   }
-  double* buffer = nullptr;
+  double *buffer = nullptr;
 
   if (new_val < cols_) {
     cols_ = new_val;
@@ -452,11 +452,11 @@ void Matrix::set_cols(int new_val) {
 /*
   Operators
 */
-bool Matrix::operator==(const Matrix& other) const {
+bool Matrix::operator==(const Matrix &other) const {
   return this->IsEqual(other);
 }
 
-Matrix& Matrix::operator=(const Matrix& other) {
+Matrix &Matrix::operator=(const Matrix &other) {
   this->~Matrix();
   rows_ = other.rows_;
   cols_ = other.cols_;
@@ -466,43 +466,43 @@ Matrix& Matrix::operator=(const Matrix& other) {
   return *this;
 }
 
-Matrix Matrix::operator+(const Matrix& other) const {
+Matrix Matrix::operator+(const Matrix &other) const {
   Matrix returnable(*this);
   returnable.Summarize(other);
 
   return returnable;
 }
 
-Matrix Matrix::operator-(const Matrix& other) const {
+Matrix Matrix::operator-(const Matrix &other) const {
   Matrix returnable(*this);
   returnable.Substract(other);
 
   return returnable;
 }
 
-Matrix Matrix::operator*(const Matrix& other) const {
+Matrix Matrix::operator*(const Matrix &other) const {
   Matrix returnable(*this);
   returnable.Multiply(other);
 
   return returnable;
 }
 
-Matrix Matrix::operator+=(const Matrix& other) {
+Matrix Matrix::operator+=(const Matrix &other) {
   this->Summarize(other);
   return *this;
 }
 
-Matrix Matrix::operator-=(const Matrix& other) {
+Matrix Matrix::operator-=(const Matrix &other) {
   this->Substract(other);
   return *this;
 }
 
-Matrix Matrix::operator*=(const Matrix& other) {
+Matrix Matrix::operator*=(const Matrix &other) {
   this->Multiply(other);
   return *this;
 }
 
-double& Matrix::operator()(int i, int j) {
+double &Matrix::operator()(int i, int j) {
   if ((i < 0 || i > rows_) || j < 0 || j > cols_) {
     throw out_of_range("Setting element that is out of matrix range");
   }
@@ -522,16 +522,17 @@ double Matrix::operator()(int i, int j) const {
   Private functions
 */
 void Matrix::init_matrix(bool fill) {
-  matrix_ = new double*[rows_];
+  matrix_ = new double *[rows_];
   if (matrix_) {
     for (int i = 0; i < rows_; ++i) {
       matrix_[i] = new double[cols_];
-      if (fill) fill_with_zeros(i);
+      if (fill)
+        fill_with_zeros(i);
     }
   }
 }
 
-void Matrix::copy_data_other_to_this_matrix(double** other_matrix) {
+void Matrix::copy_data_other_to_this_matrix(double **other_matrix) {
   for (int i = 0; i < rows_; ++i) {
     for (int j = 0; j < cols_; ++j) {
       matrix_[i][j] = other_matrix[i][j];
@@ -539,7 +540,7 @@ void Matrix::copy_data_other_to_this_matrix(double** other_matrix) {
   }
 }
 
-void Matrix::copy_data_this_to_other_matrix(double** other_matrix) {
+void Matrix::copy_data_this_to_other_matrix(double **other_matrix) {
   for (int i = 0; i < rows_; ++i) {
     for (int j = 0; j < cols_; ++j) {
       other_matrix[i][j] = matrix_[i][j];
@@ -547,8 +548,8 @@ void Matrix::copy_data_this_to_other_matrix(double** other_matrix) {
   }
 }
 
-void Matrix::calculate_multiplied_matrix_element(const Matrix& other, int i,
-                                                 int j, double* res) {
+void Matrix::calculate_multiplied_matrix_element(const Matrix &other, int i,
+                                                 int j, double *res) {
   for (int k = 0; k < cols_; k += 1) {
     *res += matrix_[i][k] * other.matrix_[k][j];
   }
@@ -599,7 +600,7 @@ double Matrix::calculate_Gauss_Determinant() {
   return returnable;
 }
 
-double Matrix::multiply_diagonal(Matrix* buffer) {
+double Matrix::multiply_diagonal(Matrix *buffer) {
   double returnable = 1.0;
 
   for (int i = 0; i < buffer->cols_; ++i) {
@@ -609,8 +610,8 @@ double Matrix::multiply_diagonal(Matrix* buffer) {
   return returnable;
 }
 
-void Matrix::process_the_row(Matrix* buffer, int row, int col,
-                             bool* is_det_zero) {
+void Matrix::process_the_row(Matrix *buffer, int row, int col,
+                             bool *is_det_zero) {
   double prew_row_n = buffer->matrix_[row - 1][col];
   double row_n = buffer->matrix_[row][col] * -1;
 
@@ -630,8 +631,8 @@ void Matrix::process_the_row(Matrix* buffer, int row, int col,
   buffer->matrix_[row][col] = 0;
 }
 
-void Matrix::scan_column_to_find_nonzero_num(Matrix* buffer, const int row,
-                                             const int col, bool* is_det_zero) {
+void Matrix::scan_column_to_find_nonzero_num(Matrix *buffer, const int row,
+                                             const int col, bool *is_det_zero) {
   bool found = false;
 
   for (int i = buffer->rows_ - 1; !found && i >= 0; i--) {
@@ -644,13 +645,13 @@ void Matrix::scan_column_to_find_nonzero_num(Matrix* buffer, const int row,
   }
 }
 
-void Matrix::summ_rows(Matrix* buffer, const int row_num, const int row_zero) {
+void Matrix::summ_rows(Matrix *buffer, const int row_num, const int row_zero) {
   for (int i = 0; i < buffer->cols_; ++i) {
     buffer->matrix_[row_zero][i] += buffer->matrix_[row_num][i];
   }
 }
 
-double Matrix::algebraic_addition(Matrix* initial_matrix, int row, int col) {
+double Matrix::algebraic_addition(Matrix *initial_matrix, int row, int col) {
   double returnable = 0.0;
   Matrix minor(initial_matrix->rows_ - 1, initial_matrix->cols_ - 1);
 
@@ -660,14 +661,16 @@ double Matrix::algebraic_addition(Matrix* initial_matrix, int row, int col) {
   return returnable;
 }
 
-void Matrix::make_matrix_minor(Matrix* initial_matrix, int row, int col,
-                               Matrix* minor) {
+void Matrix::make_matrix_minor(Matrix *initial_matrix, int row, int col,
+                               Matrix *minor) {
   int i = 0, j = 0;
 
   for (int im = 0; im < minor->rows_; ++im) {
     for (int jm = 0; jm < minor->rows_; ++jm) {
-      if (i == row) ++i;
-      if (j == col) ++j;
+      if (i == row)
+        ++i;
+      if (j == col)
+        ++j;
       minor->matrix_[im][jm] = initial_matrix->matrix_[i][j];
       ++i;
     }
@@ -676,19 +679,19 @@ void Matrix::make_matrix_minor(Matrix* initial_matrix, int row, int col,
   }
 }
 
-void Matrix::IsInputFileOpened(const ifstream& file) {
+void Matrix::IsInputFileOpened(const ifstream &file) {
   if (!file.is_open()) {
     throw invalid_argument("File cuold not be opened.");
   }
 }
 
-void Matrix::IsOutputFileOpened(const ofstream& file) {
+void Matrix::IsOutputFileOpened(const ofstream &file) {
   if (!file.is_open()) {
     throw invalid_argument("File could not be opened.");
   }
 }
 
-void Matrix::ReadMatrixSize(ifstream& file) {
+void Matrix::ReadMatrixSize(ifstream &file) {
   string line;
   getline(file, line, '\n');
   int rows = 0, cols = 0;
@@ -702,7 +705,7 @@ void Matrix::ReadMatrixSize(ifstream& file) {
   set_cols(cols);
 }
 
-void Matrix::ReadMatrix(ifstream& file) {
+void Matrix::ReadMatrix(ifstream &file) {
   string line;
   int row = 0;
   int rows = get_rows();
@@ -712,17 +715,17 @@ void Matrix::ReadMatrix(ifstream& file) {
   }
 }
 
-void Matrix::ReadLineToMatrixRow(const string& line, int row) {
+void Matrix::ReadLineToMatrixRow(const string &line, int row) {
   int col = 0;
   for (size_t i = 0; i < line.size(); ++i) {
-    const char* number = &(line.data())[i];
+    const char *number = &(line.data())[i];
     this->operator()(row, col) = atof(number);
     ++col;
     ShiftToNextNumber(line, &i);
   }
 }
 
-void Matrix::ShiftToNextNumber(const string& line, size_t* i) {
+void Matrix::ShiftToNextNumber(const string &line, size_t *i) {
   while (isdigit(line.data()[*i]) && *i < line.size()) {
     ++(*i);
   }
@@ -732,11 +735,11 @@ void Matrix::ShiftToNextNumber(const string& line, size_t* i) {
   --(*i);
 }
 
-void Matrix::WriteMatrixSize(ofstream& file) {
+void Matrix::WriteMatrixSize(ofstream &file) {
   file << get_rows() << " " << get_cols() << "\n";
 }
 
-void Matrix::WriteMatrix(ofstream& file) {
+void Matrix::WriteMatrix(ofstream &file) {
   for (int i = 0; i < get_rows(); ++i) {
     for (int j = 0; j < get_cols(); ++j) {
       file << this->operator()(i, j) << " ";
@@ -745,4 +748,4 @@ void Matrix::WriteMatrix(ofstream& file) {
   }
 }
 
-}  // namespace hhullen
+} // namespace hhullen
