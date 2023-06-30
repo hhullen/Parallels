@@ -47,8 +47,9 @@ class TaskManager {
     threads_amount_ = number;
     Terminate();
     threads_.clear();
-    // tasks_queues_.clear();
+    tasks_queues_.clear();
     terminate_ = false;
+    thread_index_ = 0;
     InitThreads();
   }
 

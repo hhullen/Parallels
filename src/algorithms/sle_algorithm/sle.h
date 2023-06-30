@@ -3,12 +3,9 @@
 
 #include <matrix/matrix.h>
 
-#include <memory>
 #include <string>
 #include <thread>
 #include <vector>
-
-#include "../task_manager/task_manager.h"
 
 using hhullen::Matrix;
 
@@ -16,7 +13,6 @@ namespace s21 {
 using Str = std::string;
 using Thread = std::thread;
 using Workers = std::vector<Thread>;
-using TaskManagerPtr = std::unique_ptr<TaskManager>;
 
 class SLE {
  public:
@@ -33,9 +29,7 @@ class SLE {
   Matrix extended_;
   int threads_ = static_cast<int>(Thread::hardware_concurrency() / 2);
 
-  // Workers workers_;
-  TaskManager task_manager_{static_cast<size_t>(threads_)};
-  // TaskManagerPtr task_manager_;
+  Workers workers_;
 
   void VerifyCorrectness();
   void SetElementToZero(const int row, const int col);
@@ -59,6 +53,8 @@ class SLE {
   void RunBackwardMultithreadPerSet(const int col);
   void RunBackwardMultithreadPerLine(const int col);
   void BackwardRunner(const int from, const int to, const int col);
+
+  void CatchWorkers();
 };
 
 }  // namespace s21
