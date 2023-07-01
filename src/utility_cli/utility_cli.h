@@ -1,7 +1,10 @@
 #ifndef SRC_UTILITY_CLI_UTILITY_CLI_H_
 #define SRC_UTILITY_CLI_UTILITY_CLI_H_
 
+#include <aco_algorithm/aco.h>
 #include <cmd_args/cmd_args.h>
+#include <sle_algorithm/sle.h>
+#include <timer/timer.h>
 
 #include <iostream>
 #include <list>
@@ -10,14 +13,13 @@
 
 using hhullen::Argument;
 using hhullen::CMDArgs;
+using hhullen::DTime;
 using hhullen::Flag;
+using hhullen::Timer;
+using std::atol;
 
 namespace s21 {
 
-using Str = std::string;
-
-// using s21::Graph;
-// using s21::GraphAlgorithms;
 using std::atoi;
 using std::cout;
 using std::invalid_argument;
@@ -28,21 +30,29 @@ using FlagValues = std::list<Str>;
 
 class UtilityCLI {
  public:
-  UtilityCLI() {}
+  UtilityCLI() = delete;
+  UtilityCLI(const UtilityCLI& other) = delete;
+  UtilityCLI(const UtilityCLI&& other) = delete;
   UtilityCLI(int argc, const char* argv[]);
+
   void Exec();
 
  private:
   map<std::string, void (UtilityCLI::*)()> algorithms_runners_;
   CMDArgs command_line_;
+  int repeats_, threads_;
+  Str file_path_;
+  Timer timer_;
 
   void InitializeAlgorithms();
 
-  void ACO();
-  void SLE();
-  void Winograd();
+  void RunACO();
+  void RunSLE();
+  void RunWinograd();
 
-  void WriteOutFile();
+  double StopAndReportTimer(const Str& message);
+  void ReportRatio(const double usual_time, const double parallel_time);
+  void ReadCMDArguments();
 };
 
 }  // namespace s21

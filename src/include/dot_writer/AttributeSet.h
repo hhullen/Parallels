@@ -412,7 +412,12 @@ class GraphAttributeSet : public AttributeSet {
    */
   void SetDimen(int val) {
     if (val > 10) val = 10;
+<<<<<<< HEAD
     AddSimpleAttribute<unsigned>(AttributeType::DIMEN, val);
+=======
+    AddSimpleAttribute<unsigned>(AttributeType::DIMEN,
+                                 static_cast<unsigned int>(val));
+>>>>>>> a77bc0d5f38b5058f435bedae87f0120af1cbcb8
   }
 
   /**

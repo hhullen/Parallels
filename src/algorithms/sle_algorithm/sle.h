@@ -4,26 +4,57 @@
 #include <matrix/matrix.h>
 
 #include <string>
+#include <thread>
+#include <vector>
 
 using hhullen::Matrix;
-using std::string;
 
 namespace s21 {
+using Str = std::string;
+using Thread = std::thread;
+using Workers = std::vector<Thread>;
 
 class SLE {
  public:
   SLE();
   ~SLE();
-  void Load(string &file_path);
-  void Save(string &file_path);
+  void Load(const Str &file_path);
+  void Save(const Str &file_path);
   void SolveUsual();
   void SolveParallel();
   const Matrix GetVariables();
+  void SetThreads(const int amount);
 
  private:
-  Matrix coefficients_;
-  Matrix constants_;
-  Matrix variables_;
+  Matrix extended_;
+  int threads_ = static_cast<int>(Thread::hardware_concurrency() / 2);
+
+  Workers workers_;
+
+  void VerifyCorrectness();
+  void SetElementToZero(const int row, const int col);
+
+  void GaussForward();
+  void MakeUnitsDiagonally();
+  void GaussBackward();
+
+  void GaussForwardPrl();
+  void MakeUnitsDiagonallyPrl();
+  void GaussBackwardPrl();
+
+  void RunForwardMultithreadPerSet(const int rows, const int col);
+  void RunForwardMultithreadPerLine(const int rows, const int col);
+  void ForwardRunner(const int from, const int to, const int col);
+
+  void RunDiagonallyMultithreadPerSet(const int rows);
+  void RunDiagonallyMultithreadPerLine(const int rows);
+  void DiagonallyRunner(const int from, const int to);
+
+  void RunBackwardMultithreadPerSet(const int col);
+  void RunBackwardMultithreadPerLine(const int col);
+  void BackwardRunner(const int from, const int to, const int col);
+
+  void CatchWorkers();
 };
 
 }  // namespace s21
