@@ -9,8 +9,8 @@ using std::string;
 
 int main(int argc, const char* argv[]) {
   int exit_code = 1;
+  UtilityCLI utility(argc, argv);
   try {
-    UtilityCLI utility(argc, argv);
     utility.Exec();
     exit_code = 0;
   } catch (const invalid_argument& ex) {

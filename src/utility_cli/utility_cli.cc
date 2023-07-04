@@ -37,20 +37,19 @@ void UtilityCLI::Exec() {
 
 void UtilityCLI::RunACO() {
   ReadCMDArguments();
-  TSPAlgorithm runner;
+  TSPAlgorithm runner(static_cast<size_t>(threads_));
   Graph graph;
+  graph.LoadGraphFromFile(file_path_);
 
   timer_.Reset();
   for (int i = 0; i < repeats_; ++i) {
-    graph.LoadGraphFromFile(file_path_);
     runner.Solve(graph);
   }
   double usual_time = StopAndReportTimer("ACO usual Finished");
 
   timer_.Reset();
   for (int i = 0; i < repeats_; ++i) {
-    graph.LoadGraphFromFile(file_path_);
-    runner.Solve(graph);
+    runner.SolveParallel(graph);
   }
   double parallel_time = StopAndReportTimer("ACO parallel Finished");
   ReportRatio(usual_time, parallel_time);

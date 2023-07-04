@@ -11,15 +11,13 @@
 
 #include "taks_queue.h"
 
+using std::atomic;
 using std::bind;
 using std::condition_variable;
+using std::defer_lock;
 using std::function;
-using std::move;
 using std::mutex;
-using std::queue;
 using std::thread;
-
-using std::atomic;
 using std::unique_lock;
 using std::vector;
 
@@ -28,10 +26,7 @@ namespace s21 {
 class TaskManager {
  public:
   TaskManager(size_t threads = thread::hardware_concurrency() / 2)
-      : threads_amount_(threads),
-        thread_index_(0),
-        works_(0),
-        terminate_(false) {
+      : threads_amount_(threads), thread_index_(0), works_(0) {
     if (threads_amount_ < 1) {
       threads_amount_ = 1;
     }
@@ -96,7 +91,7 @@ class TaskManager {
   mutex mutex_;
 
   atomic<int> works_;
-  bool terminate_{false};
+  atomic<bool> terminate_{false}, running_{true};
 
   void Run() {
     while (true) {
@@ -111,7 +106,7 @@ class TaskManager {
         task();
         --works_;
       } else if (terminate_) {
-        return;
+        break;
       }
       notifier_.notify_all();
     }
@@ -125,10 +120,12 @@ class TaskManager {
   }
 
   void Terminate() {
-    terminate_ = true;
     AwaitAll();
+    terminate_ = true;
     for (thread &trd : threads_) {
-      trd.join();
+      if (trd.joinable()) {
+        trd.join();
+      }
     }
   }
 };
