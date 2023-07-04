@@ -15,7 +15,8 @@ TEST(CLI_tests, constructor) {
       "5",
       "SLE",
   });
-  EXPECT_NO_THROW(s21::UtilityCLI cmd(argv.size(), argv.data()));
+  EXPECT_NO_THROW(
+      s21::UtilityCLI cmd(static_cast<int>(argv.size()), argv.data()));
 }
 
 TEST(CLI_tests, no_algorithm) {
@@ -26,7 +27,8 @@ TEST(CLI_tests, no_algorithm) {
       "-n",
       "5",
   });
-  EXPECT_THROW(s21::UtilityCLI cmd(argv.size(), argv.data()), invalid_argument);
+  EXPECT_THROW(s21::UtilityCLI cmd(static_cast<int>(argv.size()), argv.data()),
+               invalid_argument);
 }
 
 TEST(CLI_tests, wrong_algorithm) {
@@ -38,7 +40,7 @@ TEST(CLI_tests, wrong_algorithm) {
       "-n",
       "5",
   });
-  s21::UtilityCLI cmd(argv.size(), argv.data());
+  s21::UtilityCLI cmd(static_cast<int>(argv.size()), argv.data());
   EXPECT_THROW(cmd.Exec(), invalid_argument);
 }
 
@@ -47,7 +49,8 @@ TEST(CLI_tests, no_flags) {
       "prl",
       "SLE",
   });
-  EXPECT_NO_THROW(s21::UtilityCLI cmd(argv.size(), argv.data()));
+  EXPECT_NO_THROW(
+      s21::UtilityCLI cmd(static_cast<int>(argv.size()), argv.data()));
 }
 
 TEST(CLI_tests, run_SLE_mc4_n5_t4) {
@@ -61,7 +64,7 @@ TEST(CLI_tests, run_SLE_mc4_n5_t4) {
       "-t",
       "4",
   });
-  s21::UtilityCLI cmd(argv.size(), argv.data());
+  s21::UtilityCLI cmd(static_cast<int>(argv.size()), argv.data());
   EXPECT_NO_THROW(cmd.Exec());
 }
 
@@ -76,7 +79,7 @@ TEST(CLI_tests, run_SLE_mc4_n500_t3) {
       "-t",
       "3",
   });
-  s21::UtilityCLI cmd(argv.size(), argv.data());
+  s21::UtilityCLI cmd(static_cast<int>(argv.size()), argv.data());
   EXPECT_NO_THROW(cmd.Exec());
 }
 
@@ -91,7 +94,7 @@ TEST(CLI_tests, run_SLE_mr500_n2_t5) {
       "-t",
       "5",
   });
-  s21::UtilityCLI cmd(argv.size(), argv.data());
+  s21::UtilityCLI cmd(static_cast<int>(argv.size()), argv.data());
   EXPECT_NO_THROW(cmd.Exec());
 }
 
@@ -106,7 +109,7 @@ TEST(CLI_tests, run_SLE_mr500_n0_t5) {
       "-t",
       "5",
   });
-  s21::UtilityCLI cmd(argv.size(), argv.data());
+  s21::UtilityCLI cmd(static_cast<int>(argv.size()), argv.data());
   EXPECT_NO_THROW(cmd.Exec());
 }
 
@@ -121,7 +124,8 @@ TEST(CLI_tests, run_SLE_mr500_n2neg_t5) {
       "-t",
       "5",
   });
-  EXPECT_THROW(s21::UtilityCLI cmd(argv.size(), argv.data()), invalid_argument);
+  EXPECT_THROW(s21::UtilityCLI cmd(static_cast<int>(argv.size()), argv.data()),
+               invalid_argument);
 }
 
 TEST(CLI_tests, run_SLE_mr500_n2_t5neg) {
@@ -135,5 +139,6 @@ TEST(CLI_tests, run_SLE_mr500_n2_t5neg) {
       "-t",
       "-5",
   });
-  EXPECT_THROW(s21::UtilityCLI cmd(argv.size(), argv.data()), invalid_argument);
+  EXPECT_THROW(s21::UtilityCLI cmd(static_cast<int>(argv.size()), argv.data()),
+               invalid_argument);
 }

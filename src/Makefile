@@ -83,18 +83,18 @@ check:
 	clang-format -i --style=Google $(CHECK_FILES)
 	clang-format -n --style=Google $(CHECK_FILES)
 
-tests: libmatrix.a libalgorithms.a
+tests: clean libmatrix.a libalgorithms.a libgraph.a
 	$(COMPILER) $(STD) $(CODE_DIAG_FLAGS) $(TESTBUILD_FILES) $(TEST_FLAGS) \
-	-I $(INCLUDE_DIR) -I $(ALGORITHMS_DIR) -L . -lmatrix -lalgorithms -o $(TEST_EXECUTABLE)
+	-I $(INCLUDE_DIR) -I $(ALGORITHMS_DIR) -L . -lmatrix -lalgorithms -lgraph -o $(TEST_EXECUTABLE)
 	.$(SEP)$(TEST_EXECUTABLE)
 
 gcov_report: gcov_build
 	lcov -t "test" -o test.info -c -d .
 	genhtml -o report test.info
 
-gcov_build: libmatrix.a libalgorithms.a
+gcov_build: libmatrix.a libalgorithms.a libgraph.a
 	$(COMPILER) $(STD) $(TESTBUILD_FILES) $(CLI_BULD_FILES) $(TEST_FLAGS) \
-	-I $(INCLUDE_DIR) -I $(ALGORITHMS_DIR) -L . -lmatrix -lalgorithms -o $(TEST_EXECUTABLE) --coverage
+	-I $(INCLUDE_DIR) -I $(ALGORITHMS_DIR) -L . -lmatrix -lalgorithms -lgraph -o $(TEST_EXECUTABLE) --coverage
 	.$(SEP)$(TEST_EXECUTABLE)
 
 clean:
@@ -115,3 +115,4 @@ test_cli:
 	.$(SEP)$(CLI_EXECUTABLE) SLE -f tests$(SEP)dataset$(SEP)matrix_correct_4.txt -n 10000 -t 5
 	.$(SEP)$(CLI_EXECUTABLE) SLE -f tests$(SEP)dataset$(SEP)matrix_random_500.txt -n 1 -t 5
 	.$(SEP)$(CLI_EXECUTABLE) ACO -f tests/dataset/graph_example_11.txt -n 5000
+	.$(SEP)$(CLI_EXECUTABLE) ACO -f tests/dataset/graph_example_200.txt -n 1 -t 20

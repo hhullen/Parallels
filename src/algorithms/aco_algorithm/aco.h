@@ -30,7 +30,7 @@ struct TsmResult {
 
 class TSPAlgorithm {
  public:
-  TSPAlgorithm(size_t threads);
+  TSPAlgorithm(size_t threads = 2);
   TsmResult Solve(Graph &graph);
   TsmResult SolveParallel(Graph &graph);
 

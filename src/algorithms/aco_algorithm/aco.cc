@@ -4,7 +4,7 @@
 
 namespace s21 {
 
-TSPAlgorithm::TSPAlgorithm(size_t threads = 2) {
+TSPAlgorithm::TSPAlgorithm(size_t threads) {
   task_namager_.SetThreads(threads);
 }
 
