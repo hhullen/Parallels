@@ -1,8 +1,6 @@
 #ifndef SRC_GRAPH_GRAPH_H_
 #define SRC_GRAPH_GRAPH_H_
 
-#include <dot_writer/DotWriter.h>
-
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -10,18 +8,12 @@
 
 namespace s21 {
 
-using DotWriter::Edge;
-using DotWriter::EdgeAttributeSet;
-using DotWriter::Node;
-using DotWriter::RootGraph;
 using std::atoi;
 using std::cout;
 using std::getline;
 using std::ifstream;
 using std::invalid_argument;
 using std::isdigit;
-using std::ofstream;
-using std::ostream;
 using std::string;
 using std::to_string;
 using std::vector;
@@ -72,8 +64,6 @@ class Graph {
   void Resize(int size);
   size_t get_size();
   void LoadGraphFromFile(const string &path);
-  void ExportGraphToDot(const string &path,
-                        const string &graph_name = "somegraph");
 
   static void Print(Graph &graph) {
     size_t size = graph.get_size();
@@ -87,20 +77,12 @@ class Graph {
 
  private:
   AdjacencyMatrix matrix_;
-  ifstream *input_file_;
-  ofstream *output_file_;
-  vector<Node *> nodes_;
 
-  void IsInputFileOpened();
-  void IsOutputFileOpened();
-  void ReadAdjacencyMatrixSize();
-  void ReadAdjacencyMatrix();
+  void IsInputFileOpened(ifstream &input_file);
+  void ReadAdjacencyMatrixSize(ifstream &input_file);
+  void ReadAdjacencyMatrix(ifstream &input_file);
   void ReadLineToMatrixRow(string &line, int row);
   void ShiftToNextNumber(string &line, size_t *i);
-  void WriteDotWriterObject(const string &graph_name);
-  void AddNodesToDotWriterObject(RootGraph &dot_object);
-  void AddEdgesToDotWriterObject(RootGraph &dot_object);
-  void AddEdgeBetwenNodesToDotWriterObject(int i, int j, RootGraph &dot_object);
 };
 
 }  // namespace s21

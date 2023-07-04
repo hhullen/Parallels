@@ -75,12 +75,6 @@ libs21_graph.a:
 	ranlib libs21_graph.a
 	$(DELETE_FILE) *.o
 
-libdotlib.a:
-	$(COMPILER) $(STD) $(CODE_DIAG_FLAGS) -O3 -c $(INCLUDE_DIR)$(SEP)dot_writer$(SEP)*.cpp
-	ar cr libdotlib.a *.o
-	ranlib libdotlib.a
-	$(DELETE_FILE) *.o
-
 check:
 	cppcheck $(CPPCH_SETUP) $(CHECK_FILES)
 	$(COPY) $(CLANG_FILE_WAY) $(CLANG_FILE)
@@ -108,16 +102,16 @@ clean:
 leaks: cli
 	leaks -atExit -- .$(SEP)$(CLI_EXECUTABLE) SLE -f tests$(SEP)dataset$(SEP)matrix_correct_8.txt -n 1 -t 5
 
-cli: libmatrix.a libalgorithms.a libs21_graph.a libdotlib.a
+cli: libmatrix.a libalgorithms.a libs21_graph.a
 	rm libalgorithms.a
 	make libalgorithms.a
 	g++ $(STD) $(CODE_DIAG_FLAGS) -O3 main.cc -I $(INCLUDE_DIR) -I $(ALGORITHMS_DIR) \
-	-L . -lmatrix -lalgorithms -ls21_graph -ldotlib -o $(CLI_EXECUTABLE)
+	-L . -lmatrix -lalgorithms -ls21_graph -o $(CLI_EXECUTABLE)
 	# make test_cli
 
-	.$(SEP)$(CLI_EXECUTABLE) SLE -f tests$(SEP)dataset$(SEP)matrix_correct_8.txt -n 1 -t 5
 
 test_cli:
+	.$(SEP)$(CLI_EXECUTABLE) SLE -f tests$(SEP)dataset$(SEP)matrix_correct_8.txt -n 1 -t 5
 	.$(SEP)$(CLI_EXECUTABLE) SLE -f tests$(SEP)dataset$(SEP)matrix_correct_4.txt -n 10000 -t 5
 	.$(SEP)$(CLI_EXECUTABLE) SLE -f tests$(SEP)dataset$(SEP)matrix_random_500.txt -n 1 -t 5
 	.$(SEP)$(CLI_EXECUTABLE) ACO -f tests/dataset/graph_example.txt -n 5000

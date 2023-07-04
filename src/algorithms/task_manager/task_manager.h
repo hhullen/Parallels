@@ -50,6 +50,7 @@ class TaskManager {
     tasks_queues_.clear();
     terminate_ = false;
     thread_index_ = 0;
+    works_ = 0;
     InitThreads();
   }
 
@@ -74,6 +75,11 @@ class TaskManager {
   void AwaitAll() {
     unique_lock<mutex> locker(mutex_);
     notifier_.wait(locker, [this]() { return works_ == 0; });
+  }
+
+  void AwaitOne() {
+    unique_lock<mutex> locker(mutex_);
+    notifier_.wait(locker, [this]() { return works_ > 0; });
   }
 
   void operator=(const TaskManager &src) {

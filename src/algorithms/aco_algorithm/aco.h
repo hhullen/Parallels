@@ -7,13 +7,13 @@
 #include <random>
 #include <vector>
 
-namespace s21 {
-
 using std::find;
 using std::pair;
 using std::pow;
 using std::rand;
 using std::vector;
+
+namespace s21 {
 
 struct TsmResult {
   TsmResult() : distance(0) {}
@@ -24,6 +24,7 @@ struct TsmResult {
 class TSPAlgorithm {
  public:
   TsmResult Solve(Graph &graph);
+  TsmResult SolveParallel(Graph &graph);
 
  private:
   vector<pair<int, double>> probabilities_;
