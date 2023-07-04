@@ -84,7 +84,10 @@ void TSPAlgorithm::DivideProbabilitiesByDenominator(const double denominator) {
   }
 }
 
-double TSPAlgorithm::GetRandomPercentValue() { return rand() % 101; }
+double TSPAlgorithm::GetRandomPercentValue() {
+  unique_lock<mutex> locker(mtx_);
+  return rand() % 101;
+}
 
 int TSPAlgorithm::GetNextDestination(const double random_percent) {
   size_t i = 0, size = probabilities_.size() - 1;
@@ -96,8 +99,8 @@ int TSPAlgorithm::GetNextDestination(const double random_percent) {
 }
 
 void TSPAlgorithm::RunPheromonesEvaporation() {
-  unique_lock<mutex> locker(mtx_);
   int size = static_cast<int>(pheromones_.get_size());
+  unique_lock<mutex> locker(mtx_);
   for (int i = 0; i < size; ++i) {
     for (int j = 0; j < size; ++j) {
       if (pheromones_(i, j) - kPheromon_evaporation_rate_ < 0) {
@@ -121,7 +124,6 @@ void TSPAlgorithm::UpdateResult(TsmResult &result, int distance, int dest) {
 }
 
 void TSPAlgorithm::SetNewResult(const TsmResult &result) {
-  unique_lock<mutex> locker(mtx_);
   if (result_.distance == 0 || result.distance < result_.distance) {
     result_ = result;
   }
