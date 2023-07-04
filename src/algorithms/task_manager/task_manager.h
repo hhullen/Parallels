@@ -54,7 +54,7 @@ class TaskManager {
     bool is_pushed = false;
     size_t i = 0;
 
-    for (; !is_pushed && i != threads_amount_; ++i) {
+    for (; !is_pushed && i != threads_amount_ * 2; ++i) {
       size_t index = (thread_index_ + i) % threads_amount_;
       is_pushed = tasks_queues_[index].TryPush(bind(function, args...));
     }
@@ -91,7 +91,7 @@ class TaskManager {
   mutex mutex_;
 
   atomic<int> works_;
-  atomic<bool> terminate_{false}, running_{true};
+  atomic<bool> terminate_{false};
 
   void Run() {
     while (true) {

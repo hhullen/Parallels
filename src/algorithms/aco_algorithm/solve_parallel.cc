@@ -67,7 +67,8 @@ void TSPAlgorithm::DivideProbabilitiesByDenominatorTrd(
 }
 
 int TSPAlgorithm::GetNextDestinationTrd(
-    const double random_percent, vector<pair<int, double>> &probabilities) {
+    const double random_percent,
+    const vector<pair<int, double>> &probabilities) {
   size_t i = 0;
   size_t size = probabilities.size() - 1;
   double summ = 0;

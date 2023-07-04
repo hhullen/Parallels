@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <atomic>
+#include <memory>
 #include <mutex>
 #include <random>
 #include <vector>
@@ -61,7 +62,7 @@ class TSPAlgorithm {
   double GetRandomPercentValue();
   int GetNextDestination(const double random_percent);
   int GetNextDestinationTrd(const double random_percent,
-                            vector<pair<int, double>> &probabilities);
+                            const vector<pair<int, double>> &probabilities);
   void RunPheromonesEvaporation();
   void AddPheromoneTrack(int start, int dest);
   void UpdateResult(TsmResult &result, int distance, int dest);

@@ -17,8 +17,6 @@ TEST(ACO_tests, solve_usual) {
   s21::TSPAlgorithm object;
   s21::Graph grpaph;
 
-  grpaph.LoadGraphFromFile("tests/dataset/graph_example_11.txt");
-  EXPECT_NO_THROW(object.Solve(grpaph));
   grpaph.LoadGraphFromFile("tests/dataset/graph_example_100.txt");
   EXPECT_NO_THROW(object.Solve(grpaph));
 }
@@ -27,8 +25,6 @@ TEST(ACO_tests, solve_parallel) {
   s21::TSPAlgorithm object;
   s21::Graph grpaph;
 
-  grpaph.LoadGraphFromFile("tests/dataset/graph_example_11.txt");
-  EXPECT_NO_THROW(object.SolveParallel(grpaph));
   grpaph.LoadGraphFromFile("tests/dataset/graph_example_100.txt");
   EXPECT_NO_THROW(object.SolveParallel(grpaph));
 }

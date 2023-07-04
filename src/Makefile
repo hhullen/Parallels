@@ -55,9 +55,9 @@ ifeq ($(OS), Darwin)
 	COPY=cp
 endif
 
-.PHONY: all check tests clean gcov_report gcov_build cli
+.PHONY: all check tests clean gcov_report gcov_build cli test_cli leaks
 
-all: clean tests prl_cli check
+all: clean tests cli check
 
 libmatrix.a:
 	$(COMPILER) -O3 -c $(INCLUDE_DIR)$(SEP)matrix$(SEP)*.cc
@@ -83,7 +83,7 @@ check:
 	clang-format -i --style=Google $(CHECK_FILES)
 	clang-format -n --style=Google $(CHECK_FILES)
 
-tests: clean libmatrix.a libalgorithms.a libgraph.a
+tests: libmatrix.a libalgorithms.a libgraph.a
 	$(COMPILER) $(STD) $(CODE_DIAG_FLAGS) $(TESTBUILD_FILES) $(TEST_FLAGS) \
 	-I $(INCLUDE_DIR) -I $(ALGORITHMS_DIR) -L . -lmatrix -lalgorithms -lgraph -o $(TEST_EXECUTABLE)
 	.$(SEP)$(TEST_EXECUTABLE)
@@ -103,11 +103,12 @@ clean:
 
 leaks: cli
 	leaks -atExit -- .$(SEP)$(CLI_EXECUTABLE) SLE -f tests$(SEP)dataset$(SEP)matrix_correct_8.txt -n 1 -t 5
+	leaks -atExit -- .$(SEP)$(CLI_EXECUTABLE) ACO -f tests/dataset/graph_example_100.txt -n 1 -t 20
 
 cli: clean libmatrix.a libalgorithms.a libgraph.a
 	g++ $(STD) $(CODE_DIAG_FLAGS) -O3 main.cc -I $(INCLUDE_DIR) -I $(ALGORITHMS_DIR) \
 	-L . -lmatrix -lalgorithms -lgraph -o $(CLI_EXECUTABLE)
-	# make test_cli
+	make test_cli
 
 
 test_cli:
