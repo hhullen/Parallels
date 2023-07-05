@@ -73,11 +73,6 @@ class TaskManager {
     notifier_.wait(locker, [this]() { return works_ == 0; });
   }
 
-  void AwaitOne() {
-    unique_lock<mutex> locker(mutex_);
-    notifier_.wait(locker, [this]() { return works_ > 0; });
-  }
-
   void operator=(const TaskManager &src) {
     this->~TaskManager();
     *this = src;
