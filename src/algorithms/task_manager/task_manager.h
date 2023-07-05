@@ -32,7 +32,8 @@ class TaskManager {
     }
     InitThreads();
   }
-
+  TaskManager(const TaskManager &src) { *this = src; };
+  TaskManager(TaskManager &&src) { *this = move(src); };
   ~TaskManager() { Terminate(); }
 
   void SetThreads(size_t number) {
@@ -113,7 +114,7 @@ class TaskManager {
   }
 
   void InitThreads() {
-    tasks_queues_ = vector<TaskQueue>(threads_amount_);
+    tasks_queues_.resize(threads_amount_);
     for (size_t i = 0; i != threads_amount_; ++i) {
       threads_.emplace_back(thread(&TaskManager::Run, this));
     }

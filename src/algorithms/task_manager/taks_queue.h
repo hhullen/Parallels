@@ -5,6 +5,7 @@
 #include <mutex>
 #include <queue>
 
+using std::forward;
 using std::function;
 using std::move;
 using std::mutex;
@@ -16,13 +17,16 @@ namespace s21 {
 
 class TaskQueue {
  public:
-  TaskQueue() {}
+  TaskQueue() = default;
+  TaskQueue(const TaskQueue &src) = default;
+  TaskQueue(TaskQueue &&src) { *this = move(src); }
+  void operator=(const TaskQueue &src) { *this = src; }
 
   template <typename Func>
   bool TryPush(Func &&function) {
     unique_lock<mutex> locker(mutex_, try_to_lock);
     if (locker) {
-      tasks_queue_.push(function);
+      tasks_queue_.push(forward<Func>(function));
       return true;
     }
     return false;
