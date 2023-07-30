@@ -17,9 +17,9 @@ TsmResult TSPAlgorithm::SolveParallel(Graph &graph) {
 void TSPAlgorithm::RunThroughGraphFromVertexTrd(Graph graph, int start) {
   TsmResult result;
   result.vertices.emplace_back(start + 1);
-  vector<int> attended;
+  thread_local vector<int> attended;
   while (attended.size() < graph.get_size()) {
-    vector<pair<int, double>> probabilities;
+    thread_local vector<pair<int, double>> probabilities;
     double denominator =
         GetProbabilitiesDenominatorTrd(graph, start, probabilities, attended);
     DivideProbabilitiesByDenominatorTrd(denominator, probabilities);

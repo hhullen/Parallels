@@ -22,7 +22,6 @@ using std::unique_lock;
 using std::vector;
 
 namespace s21 {
-
 class TaskManager {
  public:
   TaskManager(size_t threads = thread::hardware_concurrency() / 2)
@@ -37,11 +36,11 @@ class TaskManager {
   ~TaskManager() { Terminate(); }
 
   void SetThreads(size_t number) {
+    Terminate();
     if (number == 0) {
       number = 1;
     }
     threads_amount_ = number;
-    Terminate();
     threads_.clear();
     tasks_queues_.clear();
     terminate_ = false;

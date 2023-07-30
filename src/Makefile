@@ -11,7 +11,7 @@ CLI_BULD_FILES=$(CLI_DIR)$(SEP)utility_cli.cc
 TEST_EXECUTABLE=$(MAIN_PROJ_NAME)_test.out
 CLI_EXECUTABLE=prl
 COMPILER=g++
-STD=--std=c++17
+STD=--std=c++20
 CODE_DIAG_FLAGS=-Wall -Wextra -Werror -Wpedantic -Wshadow -Wconversion \
 				-Wnull-dereference -Wsign-conversion
 TEST_FLAGS=-lgtest -pthread -lgtest_main

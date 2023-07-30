@@ -22,7 +22,7 @@ TEST(ACO_tests, solve_usual) {
 }
 
 TEST(ACO_tests, solve_parallel) {
-  s21::TSPAlgorithm object;
+  s21::TSPAlgorithm object(20);
   s21::Graph grpaph;
 
   grpaph.LoadGraphFromFile("tests/dataset/graph_example_100.txt");
@@ -30,7 +30,7 @@ TEST(ACO_tests, solve_parallel) {
 }
 
 TEST(ACO_tests, set_threads) {
-  s21::TSPAlgorithm object(2);
+  s21::TSPAlgorithm object(6);
   s21::Graph grpaph;
 
   grpaph.LoadGraphFromFile("tests/dataset/graph_example_100.txt");
