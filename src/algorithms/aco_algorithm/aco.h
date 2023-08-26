@@ -12,6 +12,7 @@
 
 #include "../task_manager/task_manager.h"
 
+using hhullen::TaskManager;
 using std::atomic;
 using std::find;
 using std::mutex;
@@ -22,7 +23,6 @@ using std::unique_lock;
 using std::vector;
 
 namespace s21 {
-
 struct TsmResult {
   TsmResult() : distance(0) {}
   vector<int> vertices;

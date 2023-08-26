@@ -21,7 +21,8 @@ using std::thread;
 using std::unique_lock;
 using std::vector;
 
-namespace s21 {
+namespace hhullen {
+
 class TaskManager {
  public:
   TaskManager(size_t threads = thread::hardware_concurrency() / 2)
@@ -73,8 +74,7 @@ class TaskManager {
   }
 
   void operator=(const TaskManager &src) {
-    this->~TaskManager();
-    *this = src;
+    this->SetThreads(src.threads_amount_);
   }
 
  private:
@@ -125,6 +125,6 @@ class TaskManager {
   }
 };
 
-}  // namespace s21
+}  // namespace hhullen
 
 #endif  // SRC_ALGORITHMS_TASK_MANAGER_TASK_MANAGER_H_

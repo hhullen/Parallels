@@ -13,7 +13,7 @@ using std::queue;
 using std::try_to_lock;
 using std::unique_lock;
 
-namespace s21 {
+namespace hhullen {
 
 class TaskQueue {
  public:
@@ -34,9 +34,7 @@ class TaskQueue {
 
   template <typename Func>
   void ForcedPush(Func &&function) {
-    unique_lock<mutex> locker(mutex_, try_to_lock);
-    while (!locker) {
-    }
+    unique_lock<mutex> locker(mutex_);
     tasks_queue_.push(forward<Func>(function));
   }
 
@@ -55,6 +53,6 @@ class TaskQueue {
   queue<function<void()>> tasks_queue_;
 };
 
-}  // namespace s21
+}  // namespace hhullen
 
 #endif  // SRC_ALGORITHMS_TASK_MANAGER_TASK_QUEUE_H_
